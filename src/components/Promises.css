@@ -1,0 +1,57 @@
+.promises {
+  background: var(--ink);
+  color: #fff;
+}
+
+.promises__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 2px solid #fff;
+}
+
+.promise {
+  padding: 36px 48px 44px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.promise:nth-child(even) {
+  padding-left: 48px;
+  padding-right: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.promise__title {
+  margin-bottom: 12px;
+  font-size: var(--step-3);
+  font-weight: 650;
+  font-stretch: 82%;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+
+.promise__text {
+  max-width: 44ch;
+  color: #b7c4b9;
+}
+
+@media (max-width: 1000px) {
+  .promise {
+    padding: 30px 28px 36px 0;
+  }
+
+  .promise:nth-child(even) {
+    padding-left: 28px;
+  }
+}
+
+@media (max-width: 760px) {
+  .promises__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .promise,
+  .promise:nth-child(even) {
+    padding: 28px 0 32px;
+    border-left: 0;
+  }
+}

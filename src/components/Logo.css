@@ -1,0 +1,36 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 750;
+  font-stretch: 88%;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  text-decoration: none;
+}
+
+.logo--light {
+  color: #fff;
+}
+
+.logo--dark {
+  color: var(--ink);
+}
+
+/* Simple placeholder mark: a rounded square with one sharp corner */
+.logo__mark {
+  width: 0.78em;
+  height: 0.78em;
+  border-radius: 40% 40% 40% 6%;
+  background: currentColor;
+}
+
+.logo--dark .logo__mark {
+  background: var(--cobalt);
+}
+
+.logo__img {
+  height: 30px;
+  width: auto;
+}

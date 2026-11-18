@@ -1,0 +1,307 @@
+/* ---------- Full-screen countdown ---------- */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--cobalt);
+  color: #fff;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero__grain {
+  opacity: 0.22;
+  mix-blend-mode: soft-light;
+}
+
+.hero__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 24px;
+}
+
+.hero__body {
+  align-self: center;
+  padding-block: clamp(32px, 6vh, 72px);
+}
+
+.hero__title {
+  margin-bottom: clamp(10px, 2.2vh, 26px);
+  font-size: var(--step-2);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--sky);
+  animation: hero-fade 0.9s ease both 0.1s;
+}
+
+/* The clock. Font size drives everything inside it (all em/ch based).
+   --fit is set by useFitWidth so the digits span the full content width. */
+.clock {
+  display: flex;
+  align-items: flex-start;
+  width: max-content;
+  font-size: min(var(--fit, 13vw), 31vh);
+  font-weight: 800;
+  font-stretch: 75%;
+  line-height: 1;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.clock__unit {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.4vh, 16px);
+  animation: clock-rise 1.1s var(--ease-out) both;
+  animation-delay: calc(180ms + var(--i) * 110ms);
+}
+
+.clock__digits {
+  display: flex;
+}
+
+.clock__sep {
+  width: 0.34em;
+  text-align: center;
+  color: var(--sky);
+  opacity: 0.5;
+  transform: translateY(-0.04em);
+  animation: hero-fade 1s ease both 0.75s;
+}
+
+.clock__label {
+  padding-left: 0.06em;
+  font-size: clamp(0.95rem, 0.8rem + 0.45vw, 1.2rem);
+  font-weight: 500;
+  font-stretch: 100%;
+  line-height: 1;
+  color: var(--sky);
+}
+
+/* Each digit sits in a fixed 1ch window so the clock never jitters */
+.digit {
+  position: relative;
+  display: inline-block;
+  width: 1ch;
+  height: 1em;
+  overflow: hidden;
+}
+
+.digit__face {
+  position: absolute;
+  inset: 0;
+  text-align: center;
+}
+
+.digit__face--in {
+  animation: digit-in 0.6s var(--ease-out) both;
+}
+
+.digit__face--out {
+  animation: digit-out 0.6s var(--ease-out) both;
+}
+
+/* After launch */
+.hero__open {
+  max-width: 12ch;
+  font-size: clamp(3.2rem, 1.5rem + 8vw, 10rem);
+  font-weight: 800;
+  font-stretch: 75%;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  animation: clock-rise 1.1s var(--ease-out) both 0.15s;
+}
+
+.hero__note {
+  max-width: 40ch;
+  margin-top: 28px;
+  font-size: var(--step-1);
+  color: var(--sky);
+}
+
+.hero__open-cta {
+  margin-top: 32px;
+}
+
+.hero__foot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+  flex-wrap: wrap;
+  padding-block: 22px 30px;
+}
+
+.hero__foot::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--gutter);
+  right: var(--gutter);
+  height: 1px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.hero__date {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.hero__scroll {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--sky);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.hero__scroll-line {
+  position: relative;
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.35);
+  overflow: hidden;
+}
+
+.hero__scroll-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform: translateY(-100%);
+  transition: transform 0.45s var(--ease-out);
+}
+
+.hero__scroll:hover {
+  color: #fff;
+}
+
+.hero__scroll:hover .hero__scroll-line::after {
+  transform: none;
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes clock-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes digit-in {
+  from {
+    opacity: 0;
+    transform: translateY(-72%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes digit-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(72%);
+  }
+}
+
+/* Phones: stack the clock into a 2 x 2 grid so the digits stay huge */
+@media (max-width: 640px) {
+  .clock {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    column-gap: 0.2em;
+    row-gap: 22px;
+    font-size: min(var(--fit, 30vw), 21vh);
+  }
+
+  .clock__sep {
+    display: none;
+  }
+
+  .hero__foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Landscape phones and very short windows: keep everything on one screen */
+@media (max-height: 520px) and (orientation: landscape) {
+  .hero__bar {
+    padding-block: 12px;
+  }
+
+  .hero__body {
+    padding-block: 12px;
+  }
+
+  .hero__title {
+    margin-bottom: 8px;
+    font-size: var(--step-1);
+  }
+
+  .clock {
+    display: flex;
+    font-size: min(var(--fit, 13vw), 30vh);
+  }
+
+  .clock__sep {
+    display: block;
+  }
+
+  .clock__label {
+    font-size: 0.8rem;
+  }
+
+  .hero__foot {
+    flex-direction: row;
+    align-items: center;
+    padding-block: 10px 14px;
+  }
+}
+
+/* Very narrow phones (320px) */
+@media (max-width: 360px) {
+  .hero__foot {
+    gap: 10px;
+  }
+
+  .btn--sm {
+    padding: 0 14px;
+  }
+}
