@@ -1,8 +1,9 @@
-import { useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { usePath, scrollToHash } from './router';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
 import ScrollRail from './components/ScrollRail';
+import Loader from './components/Loader';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
@@ -38,10 +39,51 @@ const ROUTES = {
   '/privacy': { page: Privacy, title: 'Privacy Policy' },
 };
 
+// Entry loader ("Sketch. Build. Launch.") timings, in ms.
+// It plays on the first visit, and when returning to the home page.
+// Every other page change is instant.
+const LOADER_ON = new Set(['/']);
+const FADE_IN = 160; // returning home: fade the loader in, then swap the page
+const PLAY = 1180; // sketch, build, click
+const OUT = 520; // zoom into the site
+
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 export default function App() {
-  const path = usePath();
-  const route = ROUTES[path] || { page: NotFound, title: 'Page not found' };
+  const path = usePath(); // where the URL is now
+  const [shown, setShown] = useState(path); // the page actually rendered
+  const [phase, setPhase] = useState(() => (reduceMotion() ? 'idle' : 'play'));
+
+  const route = ROUTES[shown] || { page: NotFound, title: 'Page not found' };
   const Page = route.page;
+
+  // First visit: play, then zoom out into the site.
+  useEffect(() => {
+    if (phase !== 'play') return undefined;
+    const t1 = setTimeout(() => setPhase('out'), PLAY);
+    const t2 = setTimeout(() => setPhase('idle'), PLAY + OUT);
+    return () => [t1, t2].forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Page change: instant, except when going back to the home page.
+  useEffect(() => {
+    if (path === shown) return undefined;
+    if (!LOADER_ON.has(path) || reduceMotion()) {
+      setPhase('idle');
+      setShown(path);
+      return undefined;
+    }
+    setPhase('in');
+    const t1 = setTimeout(() => {
+      setShown(path);
+      setPhase('play');
+    }, FADE_IN);
+    const t2 = setTimeout(() => setPhase('out'), FADE_IN + PLAY);
+    const t3 = setTimeout(() => setPhase('idle'), FADE_IN + PLAY + OUT);
+    return () => [t1, t2, t3].forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [path]);
 
   // New page: set the title, jump to the top (or the #section in the URL).
   useLayoutEffect(() => {
@@ -49,13 +91,14 @@ export default function App() {
     if (!scrollToHash(window.location.hash, 'instant')) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
-  }, [path, route.title]);
+  }, [shown, route.title]);
 
   return (
     <>
       <a className="skip-link" href="#main">
         Skip to content
       </a>
+      <Loader phase={phase} />
       <Nav visible />
       <ScrollRail />
       <Page />
