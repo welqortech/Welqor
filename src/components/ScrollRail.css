@@ -1,0 +1,171 @@
+/* ---------- Hide the native page scrollbar where the rail takes over ---------- */
+
+html.has-rail {
+  scrollbar-width: none;
+}
+
+html.has-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- Rail ---------- */
+
+.rail {
+  --p: 0;
+  /* teal at the top of the page, gold at the bottom */
+  --tone: color-mix(in srgb, var(--sun) calc(var(--p) * 100%), #0f6470);
+  position: fixed;
+  top: calc(var(--nav-h) + 12px);
+  right: 3px;
+  bottom: 12px;
+  z-index: 60;
+  width: 16px;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.4s ease;
+}
+
+.rail.is-visible {
+  opacity: 1;
+}
+
+/* the hairline track */
+.rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(23, 34, 31, 0.22) 0 6px,
+    transparent 6px 12px
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.rail:hover::before,
+.rail.is-active::before {
+  opacity: 1;
+}
+
+/* ---------- Thumb: the brand tile, stretched ---------- */
+
+.rail__thumb {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 6px;
+  margin-left: -3px;
+  border-radius: 8px 8px 8px 2px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--tone) 70%, #fff), var(--tone));
+  box-shadow:
+    0 0 0 1.5px rgba(255, 255, 255, 0.85),
+    0 6px 16px -6px rgba(9, 47, 53, 0.55);
+  cursor: grab;
+  touch-action: none;
+  will-change: transform;
+  transition:
+    width 0.3s var(--ease-out),
+    margin 0.3s var(--ease-out),
+    border-radius 0.3s var(--ease-out);
+}
+
+.rail:hover .rail__thumb,
+.rail.is-active .rail__thumb {
+  width: 11px;
+  margin-left: -5.5px;
+  border-radius: 10px 10px 10px 3px;
+}
+
+.rail__thumb:active {
+  cursor: grabbing;
+}
+
+/* three grip lines, shown when the thumb is wide */
+.rail__grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  gap: 3px;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.rail__grip i {
+  display: block;
+  width: 5px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.rail:hover .rail__grip,
+.rail.is-active .rail__grip {
+  opacity: 1;
+}
+
+/* ---------- Progress bubble ---------- */
+
+.rail__bubble {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 12px);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  padding: 5px 10px 5px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px 999px 4px 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(8px, -50%) scale(0.9);
+  transform-origin: right center;
+  transition:
+    opacity 0.25s ease,
+    transform 0.35s var(--ease-out);
+}
+
+.rail__bubble b {
+  font-size: 0.9375rem;
+  font-weight: 750;
+  color: color-mix(in srgb, var(--tone) 55%, #fff);
+}
+
+/* a little arrow pointing at the thumb */
+.rail__bubble::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  border-left: 5px solid var(--ink);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transform: translateY(-50%);
+}
+
+.rail.is-active .rail__bubble,
+.rail:hover .rail__bubble {
+  opacity: 1;
+  transform: translate(0, -50%) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail,
+  .rail__thumb,
+  .rail__bubble {
+    transition: none;
+  }
+}

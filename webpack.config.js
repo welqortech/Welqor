@@ -11,7 +11,7 @@ module.exports = (env, argv) => {
       path: path.resolve(__dirname, 'dist'),
       filename: isDev ? 'assets/[name].js' : 'assets/[name].[contenthash:8].js',
       assetModuleFilename: 'assets/[name].[contenthash:8][ext]',
-      publicPath: 'auto',
+      publicPath: '/', // absolute, so nested routes like /work/team still find the bundle
       clean: true,
     },
 
@@ -47,7 +47,7 @@ module.exports = (env, argv) => {
     devtool: isDev ? 'eval-cheap-module-source-map' : false,
 
     devServer: {
-      port: 3000,
+      port: Number(process.env.PORT) || 3000,
       open: true,
       hot: true,
       historyApiFallback: true,

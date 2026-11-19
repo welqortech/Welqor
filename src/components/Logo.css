@@ -2,35 +2,73 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 750;
-  font-stretch: 88%;
+  font-stretch: 84%;
   line-height: 1;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.045em;
   text-decoration: none;
 }
 
-.logo--light {
-  color: #fff;
-}
-
 .logo--dark {
+  --tile: var(--cobalt);
+  --b: #fff;
+  --p: var(--sun);
   color: var(--ink);
 }
 
-/* Simple placeholder mark: a rounded square with one sharp corner */
-.logo__mark {
-  width: 0.78em;
-  height: 0.78em;
-  border-radius: 40% 40% 40% 6%;
-  background: currentColor;
+.logo--light {
+  --tile: var(--sun);
+  --b: var(--ink);
+  --p: #fff;
+  color: #fff;
 }
 
-.logo--dark .logo__mark {
-  background: var(--cobalt);
+.logo__word {
+  /* optical nudge: lowercase sits a touch high next to the tile */
+  transform: translateY(-0.04em);
+}
+
+.logo__mark {
+  flex: none;
+  width: 1.3em;
+  height: 1.3em;
+  overflow: visible;
+}
+
+.logo__tile {
+  fill: var(--tile);
+}
+
+.logo__half {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: logo-draw 0.9s cubic-bezier(0.6, 0, 0.2, 1) both;
+}
+
+.logo__half--b {
+  stroke: var(--b);
+  animation-delay: 0.15s;
+}
+
+.logo__half--p {
+  stroke: var(--p);
+  animation-delay: 0.55s;
+}
+
+@keyframes logo-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
 }
 
 .logo__img {
   height: 30px;
   width: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo__half {
+    animation: none;
+  }
 }

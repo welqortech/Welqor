@@ -1,0 +1,552 @@
+/* ---------- Hero: copy + the B and P monogram ---------- */
+
+.ab-hero {
+  overflow: hidden;
+  padding-block: clamp(48px, 7vw, 104px) clamp(24px, 4vw, 56px);
+}
+
+.ab-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 32px 48px;
+  align-items: center;
+}
+
+.ab-hero__copy {
+  display: grid;
+  gap: 24px;
+}
+
+.ab-hero__lede {
+  max-width: 46ch;
+  font-size: var(--step-1);
+  color: var(--slate);
+  text-wrap: pretty;
+}
+
+.ab-hero__scroll {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ab-hero__scroll span {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  animation: ab-nudge 2.2s ease-in-out infinite;
+}
+
+@keyframes ab-nudge {
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+.ab-mono {
+  position: relative;
+  height: clamp(280px, 32vw, 460px);
+}
+
+/* Outer span: slides in once. Inner span: floats forever. */
+.ab-mono__letter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: clamp(13rem, 24vw, 25rem);
+  font-weight: 800;
+  font-stretch: 75%;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  animation: ab-in-b 1.3s cubic-bezier(0.2, 0.9, 0.2, 1) both 0.15s;
+}
+
+.ab-mono__letter span {
+  display: block;
+  animation: ab-float 6s ease-in-out infinite 1.4s;
+}
+
+.ab-mono__letter--b {
+  color: var(--cobalt);
+  transform: translate(-88%, -50%) rotate(-4deg);
+}
+
+.ab-mono__letter--p {
+  color: var(--sun);
+  mix-blend-mode: multiply;
+  transform: translate(-22%, -46%) rotate(5deg);
+  animation-name: ab-in-p;
+}
+
+.ab-mono__letter--p span {
+  animation-delay: 2.4s;
+  animation-direction: reverse;
+}
+
+@keyframes ab-in-b {
+  from {
+    opacity: 0;
+    transform: translate(-190%, -50%) rotate(-18deg);
+  }
+}
+
+@keyframes ab-in-p {
+  from {
+    opacity: 0;
+    transform: translate(90%, -46%) rotate(18deg);
+  }
+}
+
+@keyframes ab-float {
+  50% {
+    transform: translateY(-14px) rotate(1.5deg);
+  }
+}
+
+.ab-mono__tag {
+  position: absolute;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  animation: ab-tag 0.6s var(--ease-out) both 1.3s;
+}
+
+.ab-mono__tag--b {
+  left: 4%;
+  bottom: 6%;
+  background: var(--cobalt);
+  color: #fff;
+}
+
+.ab-mono__tag--p {
+  right: 2%;
+  top: 6%;
+  background: var(--sun);
+  color: var(--ink);
+  animation-delay: 1.5s;
+}
+
+@keyframes ab-tag {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+}
+
+/* ---------- Story threads ---------- */
+
+.ab-story-head {
+  padding-top: clamp(48px, 6vw, 88px);
+  text-align: center;
+  scroll-margin-top: var(--nav-h);
+}
+
+.st {
+  --thread-x: 24;
+  position: relative;
+  padding-block: clamp(48px, 6vw, 80px) clamp(80px, 10vw, 140px);
+}
+
+.st__threads {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.st__threads path {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.st__base {
+  stroke: var(--mist);
+}
+
+.st__draw--b {
+  stroke: var(--cobalt);
+}
+
+.st__draw--p {
+  stroke: var(--sun);
+}
+
+.st__head {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.st__head--b {
+  fill: var(--cobalt);
+  filter: drop-shadow(0 0 6px rgba(9, 47, 53, 0.5));
+}
+
+.st__head--p {
+  fill: var(--sun);
+  filter: drop-shadow(0 0 6px rgba(214, 180, 106, 0.8));
+}
+
+.st__wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.st__shared {
+  display: grid;
+  gap: clamp(72px, 9vw, 128px);
+  justify-items: center;
+}
+
+.st__split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(32px, 6vw, 96px);
+  margin-block: clamp(150px, 16vw, 210px);
+}
+
+.st__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(64px, 7vw, 104px);
+}
+
+.st-card {
+  align-content: start;
+}
+
+/* The right column starts a little lower, so the two lives feel out of step */
+.st__col--p {
+  padding-top: clamp(0px, 8vw, 120px);
+}
+
+.st-card {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 600px;
+  padding: clamp(24px, 3vw, 36px);
+  border: 1.5px solid var(--ink);
+  border-radius: 24px 24px 24px 6px;
+  background: var(--paper);
+  text-align: left;
+}
+
+.st-card__tag {
+  justify-self: start;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.st-card h3 {
+  font-size: var(--step-3);
+  font-weight: 700;
+  font-stretch: 80%;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+
+.st-card p {
+  color: var(--slate);
+  text-wrap: pretty;
+}
+
+.st-card--side {
+  max-width: 420px;
+}
+
+.st-card--side h4 {
+  font-size: var(--step-2);
+  font-weight: 700;
+  font-stretch: 82%;
+  line-height: 1.08;
+}
+
+.st__col--b .st-card--side {
+  border-color: var(--cobalt);
+  box-shadow: 6px 6px 0 var(--cobalt);
+}
+
+.st__col--p .st-card--side {
+  border-color: #b8954a;
+  box-shadow: 6px 6px 0 var(--sun);
+}
+
+.st-who {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 0 16px 8px;
+  background: var(--paper);
+  text-align: center;
+}
+
+.st-who__mono {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  margin-bottom: 12px;
+  border-radius: 50% 50% 50% 14%;
+  font-size: 2.6rem;
+  font-weight: 800;
+  font-stretch: 78%;
+}
+
+.st__col--b .st-who__mono {
+  background: var(--cobalt);
+  color: #fff;
+}
+
+.st__col--p .st-who__mono {
+  background: var(--sun);
+  color: var(--ink);
+}
+
+.st-who h3 {
+  font-size: var(--step-2);
+  font-weight: 700;
+  font-stretch: 84%;
+}
+
+.st-who p {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--slate);
+}
+
+.st-card--finale {
+  max-width: 760px;
+  border: 0;
+  background: var(--cobalt);
+  color: #fff;
+  text-align: center;
+  justify-items: center;
+  padding: clamp(32px, 5vw, 64px);
+}
+
+.st-card--finale .st-card__tag {
+  justify-self: center;
+  background: var(--sun);
+  color: var(--ink);
+}
+
+.st-card--finale h3 {
+  font-size: clamp(2.2rem, 1.4rem + 3.4vw, 4.4rem);
+  line-height: 0.98;
+}
+
+.st-card--finale p {
+  max-width: 50ch;
+  color: var(--sky);
+}
+
+/* ---------- Founders ---------- */
+
+.ab-founders {
+  padding-top: clamp(40px, 5vw, 72px);
+}
+
+.ab-founders__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.founder {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 460px;
+  padding: clamp(28px, 3.5vw, 48px);
+  border-radius: 28px 28px 28px 8px;
+}
+
+.founder--b {
+  background: var(--cobalt);
+  color: #fff;
+}
+
+.founder--p {
+  background: var(--sun);
+  color: var(--ink);
+}
+
+.founder__mono {
+  position: absolute;
+  right: -0.06em;
+  bottom: -0.24em;
+  z-index: -1;
+  font-size: clamp(16rem, 26vw, 24rem);
+  font-weight: 800;
+  font-stretch: 75%;
+  line-height: 1;
+  opacity: 0.14;
+  transition: transform 0.8s var(--ease-out);
+}
+
+.founder:hover .founder__mono {
+  transform: translate(-4%, -4%) rotate(-6deg) scale(1.06);
+}
+
+.founder__role {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.founder__name {
+  font-size: var(--step-4);
+  font-weight: 750;
+  font-stretch: 78%;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+}
+
+.founder__degree {
+  font-weight: 600;
+}
+
+.founder__text {
+  max-width: 40ch;
+  margin-top: 8px;
+  opacity: 0.88;
+}
+
+.founder__ask {
+  display: grid;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 28px;
+}
+
+.founder__ask > span {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.founder__ask ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.founder__ask li {
+  padding: 6px 14px;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 550;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 960px) {
+  .ab-hero__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ab-mono {
+    order: -1;
+    height: clamp(220px, 56vw, 340px);
+  }
+
+  .ab-mono__letter {
+    font-size: clamp(11rem, 44vw, 18rem);
+  }
+}
+
+@media (max-width: 760px) {
+  /* Threads run straight down the left edge; cards sit to their right */
+  .st {
+    --thread-x: 26;
+  }
+
+  .ab-story-head {
+    text-align: left;
+  }
+
+  .st__wrap {
+    padding-left: calc(var(--gutter) + var(--safe-l) + 34px);
+  }
+
+  .st__shared {
+    justify-items: stretch;
+    gap: 48px;
+  }
+
+  .st__col {
+    align-items: stretch;
+    gap: 48px;
+  }
+
+  .st__split {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    margin-block: 48px;
+  }
+
+  .st__col--p {
+    padding-top: 0;
+  }
+
+  .st-who {
+    justify-items: start;
+    padding: 0;
+    text-align: left;
+  }
+
+  .st-card--side {
+    max-width: none;
+  }
+
+  .st-card--finale {
+    text-align: left;
+    justify-items: start;
+  }
+
+  .st-card--finale .st-card__tag {
+    justify-self: start;
+  }
+
+  .ab-founders__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .founder {
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-mono__letter,
+  .ab-mono__letter span,
+  .ab-mono__tag,
+  .ab-hero__scroll span {
+    animation: none;
+  }
+}
