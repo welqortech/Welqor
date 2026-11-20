@@ -44,8 +44,8 @@ const ROUTES = {
 // Every other page change is instant.
 const LOADER_ON = new Set(['/']);
 const FADE_IN = 160; // returning home: fade the loader in, then swap the page
-const PLAY = 1180; // sketch, build, click
-const OUT = 520; // zoom into the site
+const PLAY = 1600; // sketch, build, click
+const OUT = 420; // zoom into the site
 
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

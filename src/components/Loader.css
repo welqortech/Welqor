@@ -1,10 +1,10 @@
 /* ==================================================================
    Entry loader: Sketch → Build → Launch
    Timeline (from when the stage appears):
-     0.00–0.75s  lines draw
-     0.55–0.90s  colour fills in
-     0.80–1.10s  cursor glides to the button
-     1.05–1.15s  click
+     0.00–1.00s  lines draw
+     0.70–1.20s  colour fills in
+     1.05–1.45s  cursor glides to the button
+     1.38–1.58s  click
      then "out": the page zooms toward you and fades into the site
 ================================================================== */
 
@@ -33,7 +33,7 @@
 
 .ld.is-out {
   pointer-events: none;
-  animation: ld-fade-out 0.42s ease 0.08s both;
+  animation: ld-fade-out 0.34s ease 0.06s both;
 }
 
 @keyframes ld-fade-out {
@@ -50,7 +50,7 @@
 }
 
 .ld.is-out .ld__stage {
-  animation: ld-zoom 0.5s cubic-bezier(0.6, 0, 0.3, 1) both;
+  animation: ld-zoom 0.42s cubic-bezier(0.6, 0, 0.3, 1) both;
 }
 
 /* zoom toward the viewer, as if diving into the page */
@@ -77,9 +77,9 @@
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   animation:
-    ld-draw 0.34s cubic-bezier(0.6, 0, 0.3, 1) forwards,
-    ld-soften 0.3s ease forwards;
-  animation-delay: calc(0.04s + var(--i) * 0.07s), 0.85s;
+    ld-draw 0.44s cubic-bezier(0.6, 0, 0.3, 1) forwards,
+    ld-soften 0.39s ease forwards;
+  animation-delay: calc(0.05s + var(--i) * 0.09s), 1.1s;
 }
 
 @keyframes ld-draw {
@@ -100,7 +100,7 @@
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  animation: ld-fill 0.32s cubic-bezier(0.3, 1.4, 0.4, 1) forwards;
+  animation: ld-fill 0.42s cubic-bezier(0.3, 1.4, 0.4, 1) forwards;
 }
 
 @keyframes ld-fill {
@@ -116,45 +116,45 @@
 
 .ld-fill__frame {
   fill: #fff;
-  animation-delay: 0.55s;
+  animation-delay: 0.72s;
 }
 
 .ld-fill__bar {
   fill: #efe9dc;
-  animation-delay: 0.58s;
+  animation-delay: 0.75s;
 }
 
 .ld-fill__logo {
   fill: var(--cobalt);
-  animation-delay: 0.62s;
+  animation-delay: 0.81s;
 }
 
 .ld-fill__h1 {
   fill: var(--ink);
-  animation-delay: 0.66s;
+  animation-delay: 0.86s;
 }
 
 .ld-fill__img {
   fill: var(--cobalt);
-  animation-delay: 0.7s;
+  animation-delay: 0.91s;
 }
 
 .ld-fill__hill {
   fill: #2f7d6d;
-  animation-delay: 0.74s;
+  animation-delay: 0.96s;
 }
 
 .ld-fill__sun {
   fill: var(--sun);
-  animation-delay: 0.78s;
+  animation-delay: 1.01s;
 }
 
 /* The button fills gold, then gets pressed by the cursor */
 .ld-fill > .ld-fill__btn {
   fill: var(--sun);
   animation:
-    ld-fill 0.32s cubic-bezier(0.3, 1.4, 0.4, 1) 0.74s forwards,
-    ld-press 0.16s ease 1.06s;
+    ld-fill 0.42s cubic-bezier(0.3, 1.4, 0.4, 1) 0.96s forwards,
+    ld-press 0.21s ease 1.38s;
 }
 
 @keyframes ld-press {
@@ -170,7 +170,7 @@
   font-weight: 700;
   fill: var(--ink);
   opacity: 0;
-  animation: ld-show 0.2s ease 0.86s forwards;
+  animation: ld-show 0.26s ease 1.12s forwards;
 }
 
 @keyframes ld-show {
@@ -188,8 +188,8 @@
   stroke-linejoin: round;
   transform: translate(330px, 240px);
   animation:
-    ld-cursor 0.3s cubic-bezier(0.3, 0, 0.2, 1) 0.8s forwards,
-    ld-click 0.14s ease 1.08s;
+    ld-cursor 0.39s cubic-bezier(0.3, 0, 0.2, 1) 1.04s forwards,
+    ld-click 0.18s ease 1.4s;
 }
 
 @keyframes ld-cursor {
@@ -217,20 +217,20 @@
 
 .ld__words span {
   color: rgba(23, 34, 31, 0.2);
-  animation: ld-word 0.25s ease forwards;
+  animation: ld-word 0.33s ease forwards;
 }
 
 .ld__words span:nth-child(1) {
-  animation-delay: 0.05s;
+  animation-delay: 0.07s;
 }
 
 .ld__words span:nth-child(2) {
-  animation-delay: 0.6s;
+  animation-delay: 0.78s;
 }
 
 .ld__words span:nth-child(3) {
   animation-name: ld-word-last;
-  animation-delay: 0.95s;
+  animation-delay: 1.23s;
 }
 
 @keyframes ld-word {
