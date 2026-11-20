@@ -1,8 +1,8 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { SITE, CALL, whatsappLink } from '../config';
 import { CONNECT_TOPICS } from '../help-content';
 import WhatsAppIcon from '../components/WhatsAppIcon';
-import { saveToSheet } from '../sheets';
+import { saveToSheet, loadBookedSlots } from '../sheets';
 import './BookCall.css';
 
 /* ------------------------------------------------------------------
@@ -37,6 +37,10 @@ function upcomingDays() {
 }
 
 const dayKey = (day) => `${day.y}-${day.m}-${day.d}`;
+const pad2 = (n) => String(n).padStart(2, '0');
+// The slot id stored in the sheet: "YYYY-MM-DD HH:MM" in India time.
+const slotId = (day, mins) =>
+  `${day.y}-${pad2(day.m + 1)}-${pad2(day.d)} ${pad2(Math.floor(mins / 60))}:${pad2(mins % 60)}`;
 const asUTC = (day) => new Date(Date.UTC(day.y, day.m, day.d));
 const instant = (day, mins) => new Date(Date.UTC(day.y, day.m, day.d, 0, mins) - IST * 60000);
 
@@ -75,7 +79,7 @@ const arc = (from, to, r = R) => {
   return `M${x1} ${y1} A${r} ${r} 0 ${to - from > 180 ? 1 : 0} 1 ${x2} ${y2}`;
 };
 
-function Dial({ value, onPick }) {
+function Dial({ value, onPick, taken }) {
   const end = unwrapped(SLOTS[SLOTS.length - 1]);
   const hand = value == null ? startAngle - 20 : unwrapped(value);
   const t = value == null ? null : istTime(value);
@@ -108,8 +112,9 @@ function Dial({ value, onPick }) {
             type="button"
             role="radio"
             aria-checked={value === mins}
-            aria-label={`${label.clock} ${label.ampm} India time`}
-            className={`bk-slot${full ? ' is-hour' : ''}${value === mins ? ' is-on' : ''}`}
+            aria-label={`${label.clock} ${label.ampm} India time${taken.has(mins) ? ', already booked' : ''}`}
+            disabled={taken.has(mins)}
+            className={`bk-slot${full ? ' is-hour' : ''}${value === mins ? ' is-on' : ''}${taken.has(mins) ? ' is-taken' : ''}`}
             style={{ left: `${(x / SIZE) * 100}%`, top: `${(y / SIZE) * 100}%` }}
             onClick={() => onPick(mins)}
           >
@@ -132,12 +137,17 @@ function Dial({ value, onPick }) {
   );
 }
 
-function Pass({ name, day, mins, topic }) {
+function Pass({ name, day, mins, topic, booked }) {
   const start = day && mins != null ? instant(day, mins) : null;
   const t = mins != null ? istTime(mins) : null;
   const local = start && !sameZone() ? localTime(start) : null;
   return (
-    <div className="bk-pass" aria-label="Your booking so far">
+    <div className={`bk-pass${booked ? ' is-booked' : ''}`} aria-label="Your booking so far">
+      {booked && (
+        <span className="bk-pass__stamp" aria-hidden="true">
+          Booked
+        </span>
+      )}
       <div className="bk-pass__main">
         <div className="bk-pass__top">
           <span>Boarding pass</span>
@@ -204,7 +214,45 @@ export default function BookCall({ initialTopic = 'project' }) {
   const [form, setForm] = useState({ name: '', email: '', topic: initialTopic, company: '' });
   const [tried, setTried] = useState(false);
 
-  const set = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const [booked, setBooked] = useState(() => new Set()); // slot ids taken in the sheet
+  const [loadingSlots, setLoadingSlots] = useState(true);
+  const [status, setStatus] = useState('idle'); // idle | saving | done | taken | error
+  const savedKey = useRef('');
+
+  const refreshSlots = () =>
+    loadBookedSlots().then((ids) => {
+      setBooked(ids);
+      setLoadingSlots(false);
+      return ids;
+    });
+
+  useEffect(() => {
+    refreshSlots();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const takenFor = (d) => new Set(d ? SLOTS.filter((m) => booked.has(slotId(d, m))) : []);
+  const taken = takenFor(day);
+
+  // If the chosen time is (or becomes) booked for the chosen day, clear it.
+  useEffect(() => {
+    if (day && mins != null && booked.has(slotId(day, mins)) && status !== 'done') setMins(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [day, booked]);
+
+  const set = (e) => {
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+    if (status === 'error' || status === 'taken') setStatus('idle');
+  };
+  const pickDay = (d) => {
+    setDay(d);
+    if (status !== 'done') setStatus('idle');
+  };
+  const pickTime = (m) => {
+    setMins(m);
+    if (status !== 'done') setStatus('idle');
+  };
+
   const emailOk = /^\S+@\S+\.\S+$/.test(form.email.trim());
   const missing = [
     !day && 'a day',
@@ -216,7 +264,8 @@ export default function BookCall({ initialTopic = 'project' }) {
 
   const start = day && mins != null ? instant(day, mins) : null;
   const t = mins != null ? istTime(mins) : null;
-  const when = day && t ? `${dayLabel(day, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}, ${t.clock} ${t.ampm} IST` : '';
+  const longDay = day ? dayLabel(day, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  const when = day && t ? `${longDay}, ${t.clock} ${t.ampm} IST` : '';
   const yours = start && !sameZone() ? ` (${localTime(start)} your time)` : '';
   const summary = [
     `Hi Welqor, I would like to book a free 30-minute call.`,
@@ -231,34 +280,95 @@ export default function BookCall({ initialTopic = 'project' }) {
     .join('\n');
 
   const waHref = whatsappLink(summary);
-  const mailHref = `mailto:${SITE.email}?subject=${encodeURIComponent(`Call request: ${when}`)}&body=${encodeURIComponent(summary)}`;
+  // The calendar event's description: everything the visitor needs on the day.
+  const end = mins != null ? istTime(mins + CALL.length) : null;
+  const endLocal = start ? localTime(new Date(start.getTime() + CALL.length * 60000)) : '';
+  const calendarDetails = start
+    ? [
+        'Free 30-minute discovery call with Welqor',
+        '',
+        `When: ${longDay}, ${t.clock} ${t.ampm} to ${end.clock} ${end.ampm} (India time, IST)`,
+        !sameZone() && `Your time: ${localTime(start)} to ${endLocal}`,
+        `Where: Google Meet. We will email the link to ${form.email.trim()} within one working day.`,
+        `About: ${CONNECT_TOPICS[form.topic].label}`,
+        `Booked by: ${form.name.trim()}${form.company.trim() ? `, ${form.company.trim()}` : ''}`,
+        '',
+        'Before the call:',
+        '• Write a few lines about the idea',
+        '• Gather examples you like, or links to what you have today',
+        '• Note any deadline we should know about',
+        '',
+        'Need to reschedule?',
+        `WhatsApp: ${SITE.whatsappLabel}`,
+        `Email: ${SITE.email}`,
+        '',
+        'Welqor · https://www.welqor.in',
+      ]
+        .filter((l) => l !== false)
+        .join('\n')
+    : '';
   const gcalHref = start
-    ? `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Call with Welqor')}&dates=${gcalStamp(start)}/${gcalStamp(new Date(start.getTime() + CALL.length * 60000))}&details=${encodeURIComponent(`Free 30-minute call about ${CONNECT_TOPICS[form.topic].label}. The Google Meet link will be sent by email.`)}`
+    ? `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Discovery call with Welqor')}&dates=${gcalStamp(start)}/${gcalStamp(new Date(start.getTime() + CALL.length * 60000))}&details=${encodeURIComponent(calendarDetails)}&location=${encodeURIComponent('Google Meet (link sent by email)')}`
     : '#';
 
-  // Save the booking to the sheet the first time it is confirmed, noting
-  // which button was used. The same booking is not saved twice.
-  const savedKey = useRef('');
-  const confirm = (via) => (e) => {
+  // Save the booking to the sheet. The same booking is never saved twice.
+  const book = async (via) => {
+    const id = slotId(day, mins);
+    const key = [id, form.name.trim(), form.email.trim()].join('|');
+    if (savedKey.current === key) return;
+    savedKey.current = key;
+    setStatus('saving');
+    const result = await saveToSheet('Book a free call', {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      topic: CONNECT_TOPICS[form.topic].label,
+      company: form.company.trim(),
+      date: longDay,
+      time: `${t.clock} ${t.ampm}`,
+      localTime: start.toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }),
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+      via,
+      slot: id,
+    });
+    if (result.ok) {
+      setStatus('done');
+      setBooked((b) => new Set(b).add(id));
+      return;
+    }
+    savedKey.current = '';
+    if (result.error === 'slot-taken') {
+      setStatus('taken');
+      setMins(null);
+      refreshSlots();
+    } else {
+      setStatus('error');
+    }
+  };
+
+  const onSubmit = () => {
+    if (!ready) {
+      setTried(true);
+      return;
+    }
+    book('Website');
+  };
+
+  // WhatsApp opens straight away (browsers block it after a wait);
+  // the booking is saved alongside.
+  const onWhatsApp = (e) => {
     if (!ready) {
       e.preventDefault();
       setTried(true);
       return;
     }
-    const key = [dayKey(day), mins, form.name.trim(), form.email.trim()].join('|');
-    if (savedKey.current === key) return;
-    savedKey.current = key;
-    saveToSheet('Book a free call', {
-      name: form.name.trim(),
-      email: form.email.trim(),
-      topic: CONNECT_TOPICS[form.topic].label,
-      company: form.company.trim(),
-      date: dayLabel(day, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
-      time: `${t.clock} ${t.ampm}`,
-      localTime: start ? start.toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }) : '',
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
-      via,
-    });
+    book('WhatsApp');
+  };
+
+  const reset = () => {
+    savedKey.current = '';
+    setMins(null);
+    setStatus('idle');
+    setTried(false);
   };
 
   const weekOf = (d) => dayLabel(d, { month: 'long' });
@@ -275,19 +385,22 @@ export default function BookCall({ initialTopic = 'project' }) {
             {days.map((d, i) => {
               const on = day && dayKey(day) === dayKey(d);
               const newMonth = i === 0 || days[i - 1].m !== d.m;
+              const full = takenFor(d).size === SLOTS.length;
               return (
                 <button
                   key={dayKey(d)}
                   type="button"
                   role="radio"
                   aria-checked={Boolean(on)}
-                  className={`bk-day${on ? ' is-on' : ''}${d.dow === 1 && i > 0 ? ' is-week' : ''}`}
-                  onClick={() => setDay(d)}
+                  disabled={full}
+                  className={`bk-day${on ? ' is-on' : ''}${d.dow === 1 && i > 0 ? ' is-week' : ''}${full ? ' is-full' : ''}`}
+                  onClick={() => pickDay(d)}
                   style={{ '--i': i }}
                 >
                   {newMonth && <span className="bk-day__month">{weekOf(d)}</span>}
                   <span className="bk-day__dow">{dayLabel(d, { weekday: 'short' })}</span>
                   <span className="bk-day__num">{d.d}</span>
+                  {full && <span className="bk-day__full">Full</span>}
                 </button>
               );
             })}
@@ -298,9 +411,10 @@ export default function BookCall({ initialTopic = 'project' }) {
         <section className={`bk-step bk-step--time${day ? '' : ' is-waiting'}`}>
           <h2 className="bk-step__title">
             <span>2</span> Pick a time <small>India time · 30 minutes</small>
+            {loadingSlots && <small className="bk-loading">Checking availability…</small>}
           </h2>
           <div className="bk-time">
-            <Dial value={mins} onPick={setMins} />
+            <Dial value={mins} onPick={pickTime} taken={taken} />
             <div className="bk-time__side">
               {start && !sameZone() ? (
                 <p className="bk-time__local">
@@ -309,12 +423,17 @@ export default function BookCall({ initialTopic = 'project' }) {
               ) : (
                 <p className="bk-time__local">Slots every half hour, {istTime(SLOTS[0]).clock} AM to 6 PM.</p>
               )}
+              {day && taken.size > 0 && (
+                <p className="bk-time__legend">
+                  <span aria-hidden="true" /> {taken.size} {taken.size === 1 ? 'slot is' : 'slots are'} already booked on this day.
+                </p>
+              )}
               <ul className="bk-time__list" aria-label="Times as a list">
                 {SLOTS.map((m) => {
                   const lt = istTime(m);
                   return (
                     <li key={m}>
-                      <button type="button" aria-pressed={mins === m} onClick={() => setMins(m)}>
+                      <button type="button" aria-pressed={mins === m} disabled={taken.has(m)} onClick={() => pickTime(m)}>
                         {lt.clock} {lt.ampm}
                       </button>
                     </li>
@@ -358,30 +477,56 @@ export default function BookCall({ initialTopic = 'project' }) {
       </div>
 
       <aside className="bk__side">
-        <Pass name={form.name.trim()} day={day} mins={mins} topic={form.topic} />
+        <Pass name={form.name.trim()} day={day} mins={mins} topic={form.topic} booked={status === 'done'} />
 
-        <div className="bk-actions">
-          <a className={`bk-wa${ready ? ' is-ready' : ''}`} href={waHref} target="_blank" rel="noopener noreferrer" onClick={confirm('WhatsApp')}>
-            <WhatsAppIcon className="bk-wa__icon" />
-            <span>
-              Confirm on WhatsApp
-              <small>Preferred · {SITE.whatsappLabel}</small>
-            </span>
-          </a>
-          <div className="bk-actions__row">
-            <a className="bk-alt" href={mailHref} onClick={confirm('Email')}>
-              Send by email
-            </a>
-            <a className="bk-alt" href={gcalHref} target="_blank" rel="noopener noreferrer" onClick={confirm('Google Calendar')}>
-              Add to Google Calendar
-            </a>
+        {status === 'done' ? (
+          <div className="bk-done" role="status">
+            <p className="bk-done__title">You are booked in.</p>
+            <p>
+              {when}. We will send the Google Meet link to <strong>{form.email.trim()}</strong> within one
+              working day.
+            </p>
+            <div className="bk-done__row">
+              <a className="bk-alt" href={gcalHref} target="_blank" rel="noopener noreferrer">
+                Add to Google Calendar
+              </a>
+              <button type="button" className="bk-alt" onClick={reset}>
+                Book another time
+              </button>
+            </div>
           </div>
-          <p className={`bk-actions__note${tried && !ready ? ' is-warn' : ''}`} aria-live="polite">
-            {ready
-              ? 'We confirm the slot and send the Google Meet link within one working day.'
-              : `Still needed: ${missing.join(', ')}.`}
-          </p>
-        </div>
+        ) : (
+          <div className="bk-actions">
+            <a className={`bk-wa${ready ? ' is-ready' : ''}`} href={waHref} target="_blank" rel="noopener noreferrer" onClick={onWhatsApp}>
+              <WhatsAppIcon className="bk-wa__icon" />
+              <span>
+                Confirm on WhatsApp
+                <small>Preferred · {SITE.whatsappLabel}</small>
+              </span>
+            </a>
+            <button
+              type="button"
+              className={`bk-submit${ready ? ' is-ready' : ''}`}
+              onClick={onSubmit}
+              disabled={status === 'saving'}
+            >
+              {status === 'saving' ? 'Booking your slot…' : 'Submit booking'}
+              <span aria-hidden="true">&rarr;</span>
+            </button>
+            <p
+              className={`bk-actions__note${(tried && !ready) || status === 'taken' || status === 'error' ? ' is-warn' : ''}`}
+              aria-live="polite"
+            >
+              {status === 'taken'
+                ? 'Someone just booked that time. Please pick another slot.'
+                : status === 'error'
+                  ? `We could not save your booking. Please try again, or message us on WhatsApp at ${SITE.whatsappLabel}.`
+                  : ready
+                    ? 'We confirm the slot and send the Google Meet link within one working day.'
+                    : `Still needed: ${missing.join(', ')}.`}
+            </p>
+          </div>
+        )}
       </aside>
     </div>
   );

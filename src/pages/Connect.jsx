@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { SITE, whatsappLink } from '../config';
 import BookCall from './BookCall';
+import ReplyClock from './ReplyClock';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 import { saveToSheet } from '../sheets';
 import { CONNECT_TOPICS, CONNECT_NEEDS, CONNECT_WHEN, CONNECT_NEXT } from '../help-content';
@@ -51,7 +52,7 @@ export default function Connect() {
   });
   const [needs, setNeeds] = useState([]);
   const [errors, setErrors] = useState({});
-  const [sent, setSent] = useState(false);
+  const [sendState, setSendState] = useState('idle'); // idle | sending | sent | error
   const [mode, setMode] = useState(preset.mode);
   const formRef = useRef(null);
 
@@ -64,8 +65,10 @@ export default function Connect() {
 
   const filled = 3 - Object.keys(validate(v)).length;
 
-  const onSubmit = (e) => {
+  // Send = save the message to the "Write to us" tab of the Google Sheet.
+  const onSubmit = async (e) => {
     e.preventDefault();
+    if (sendState === 'sending') return;
     const found = validate(v);
     setErrors(found);
     const first = Object.keys(found)[0];
@@ -73,20 +76,8 @@ export default function Connect() {
       document.getElementById(`c-${first}`)?.focus();
       return;
     }
-    const subject = `${CONNECT_TOPICS[v.topic].subject} from ${v.name.trim()}`;
-    const body = [
-      `Name: ${v.name.trim()}`,
-      v.company.trim() && `Company: ${v.company.trim()}`,
-      `Email: ${v.email.trim()}`,
-      `About: ${CONNECT_TOPICS[v.topic].label}`,
-      `Looking for: ${needs.length ? needs.join(', ') : 'Not specified'}`,
-      `Timing: ${v.when}`,
-      '',
-      v.message.trim(),
-    ]
-      .filter((l) => l !== false && l !== '')
-      .join('\n');
-    saveToSheet('Write to us', {
+    setSendState('sending');
+    const result = await saveToSheet('Write to us', {
       name: v.name.trim(),
       email: v.email.trim(),
       company: v.company.trim(),
@@ -95,8 +86,13 @@ export default function Connect() {
       timing: v.when,
       message: v.message.trim(),
     });
-    window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    setSendState(result.ok ? 'sent' : 'error');
+  };
+
+  const writeAnother = () => {
+    setV((s) => ({ ...s, message: '' }));
+    setNeeds([]);
+    setSendState('idle');
   };
 
   return (
@@ -225,20 +221,36 @@ export default function Connect() {
           )}
 
           <div className="letter__foot">
-            <button type="submit" className="letter__send">
-              <span>Send it</span>
+            <button type="submit" className="letter__send" disabled={sendState === 'sending'}>
+              <span>{sendState === 'sending' ? 'Sending…' : 'Send it'}</span>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z" />
               </svg>
             </button>
-            <p>Sends your message to us and opens your email app with a copy, so you can add anything else.</p>
+            <p>Goes straight to our team. We reply within one working day.</p>
           </div>
 
-          {sent && (
-            <p className="letter__sent" role="status">
-              Your email app should be open with the message ready. If nothing happened, write to{' '}
-              <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+          {sendState === 'error' && (
+            <p className="letter__missing" role="alert">
+              We could not send your message just now. Please try again, or reach us on WhatsApp at{' '}
+              {SITE.whatsappLabel}.
             </p>
+          )}
+
+          {sendState === 'sent' && (
+            <div className="letter__done" role="status">
+              <span className="letter__seal" aria-hidden="true">
+                ✓
+              </span>
+              <p className="letter__done-title">Delivered. Thank you, {v.name.trim().split(' ')[0]}.</p>
+              <p>
+                Your message is with our team. We will reply to <strong>{v.email.trim()}</strong> within
+                one working day.
+              </p>
+              <button type="button" className="letter__again" onClick={writeAnother}>
+                Write another message
+              </button>
+            </div>
           )}
         </form>
       </div>
@@ -247,26 +259,22 @@ export default function Connect() {
 
       <section className="cn-after">
         <div className="cn-after__grid wrap">
-          <div className="cn-after__direct">
-            <h2>Rather skip the form?</h2>
-            <a className="cn-after__wa" href={whatsappLink('Hi Welqor, ')} target="_blank" rel="noopener noreferrer">
-              <WhatsAppIcon className="cn-after__wa-icon" />
-              {SITE.whatsappLabel}
-              <span>Preferred</span>
-            </a>
-            <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
-            <p>{SITE.hours}</p>
-            <p>Based in {SITE.location}, working with clients everywhere.</p>
+          <ReplyClock />
+          <div className="cn-after__journey">
+            <h2>What happens after you hit send</h2>
+            <ol className="cn-after__next">
+              {CONNECT_NEXT.map((s, i) => (
+                <li key={s.title} style={{ '--i': i }}>
+                  <span className="cn-after__dot" aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  <p className="cn-after__when">{s.when}</p>
+                  <h3>{s.title}</h3>
+                  <p>{s.text}</p>
+                </li>
+              ))}
+            </ol>
           </div>
-          <ol className="cn-after__next">
-            {CONNECT_NEXT.map((s, i) => (
-              <li key={s.title}>
-                <span>{i + 1}</span>
-                <h3>{s.title}</h3>
-                <p>{s.text}</p>
-              </li>
-            ))}
-          </ol>
         </div>
       </section>
     </main>

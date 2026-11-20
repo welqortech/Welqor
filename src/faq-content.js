@@ -10,7 +10,7 @@ export const FAQ_GROUPS = [
     items: [
       {
         q: 'How do we start working together?',
-        a: 'Message us on WhatsApp at +91 83000 83671, book a free 30-minute call on the Connect page, or write by email. We reply within one working day.',
+        a: 'Message us on WhatsApp at +91 83 000 83 671, book a free 30-minute call on the Connect page, or write by email. We reply within one working day.',
         link: { to: '/contact', label: 'Connect with Welqor' },
       },
       {

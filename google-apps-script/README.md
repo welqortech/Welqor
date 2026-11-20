@@ -42,10 +42,22 @@ can reorder columns or add your own (for example "Status" or "Notes"); the
 script leaves unknown columns blank.
 
 **Book a free call:** Received, Name, Email, Topic, Company, Date, Time (IST),
-Visitor time, Visitor time zone, Confirmed via, Page
+Visitor time, Visitor time zone, Confirmed via, Page, Slot
 
 **Write to us:** Received, Name, Email, Company, Topic, Looking for, Timing,
 Message, Page
+
+## Booked slots
+
+Each booking stores a **Slot** column (for example `2026-11-24 14:30`, India
+time). The script adds this column automatically if it is missing.
+
+- The booking page reads the booked slots and greys them out, so a slot can
+  only be booked once.
+- If two people submit the same slot at the same moment, only the first is
+  saved; the second is told to pick another time.
+- **To free a slot**, add a column called **Status** and type `Cancelled` in
+  that booking's row. The slot becomes available again on the website.
 
 ## Changing the script later
 
@@ -59,5 +71,5 @@ changing.
   script only writes to the two tabs above, ignores submissions with the
   hidden anti-spam field filled in, caps each value at 5,000 characters, and
   stops values being treated as spreadsheet formulas.
-- The browser cannot read the script's reply (Google does not allow it), so
-  the website cannot show "saved" or "failed". Check the sheet to confirm.
+- The website reads the script's reply, so visitors see "booked" or
+  "delivered" only once the row is saved, and an error message if it was not.

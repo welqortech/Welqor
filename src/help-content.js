@@ -143,9 +143,9 @@ export const CONNECT_NEEDS = [
 export const CONNECT_WHEN = ['as soon as possible', 'in the next 1 to 3 months', 'later this year', 'I am just exploring'];
 
 export const CONNECT_NEXT = [
-  { title: 'We read it', text: 'One of the founders reads every enquiry, and replies within one working day.' },
-  { title: 'We talk', text: 'A 30-minute call about your goals, users and deadline. Free, no obligation.' },
-  { title: 'You get a plan', text: 'A written scope, timeline and price, usually within two working days.' },
+  { title: 'We read it', when: 'Within 1 working day', text: 'One of the founders reads every enquiry and writes back personally.' },
+  { title: 'We talk', when: '30 minutes', text: 'A call about your goals, users and deadline. Free, no obligation.' },
+  { title: 'You get a plan', when: 'About 2 working days', text: 'A written scope, timeline and fixed price to say yes or no to.' },
 ];
 
 /* ------------------------------- Legal ------------------------------- */
@@ -299,7 +299,7 @@ export const PRIVACY = [
     id: 'form',
     title: 'How our forms work',
     body: [
-      'When you send a message or book a call, the details you typed are saved to a private Google Sheet that only the Welqor team can open. Your email app, WhatsApp or Google Calendar then opens with everything filled in, so you keep a copy too.',
+      'When you send a message or book a call, the details you typed are saved to a private Google Sheet that only the Welqor team can open. If you choose to confirm a call on WhatsApp or add it to Google Calendar, that app opens with the details filled in.',
     ],
   },
   {

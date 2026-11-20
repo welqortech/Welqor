@@ -11,7 +11,7 @@ export const SITE = {
   // format without + or spaces (used for wa.me links); `whatsappLabel` is
   // how it is shown on the page.
   whatsapp: '918300083671',
-  whatsappLabel: '+91 83000 83671',
+  whatsappLabel: '+91 83 000 83 671',
 
   location: 'India',
 

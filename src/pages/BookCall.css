@@ -728,3 +728,212 @@
     animation: none;
   }
 }
+
+/* ==================================================================
+   Availability, submit and confirmation
+================================================================== */
+
+/* Booked slots: crossed out and not clickable */
+.bk-slot.is-taken {
+  background: #ece6d8;
+  box-shadow: 0 0 0 1.5px rgba(23, 34, 31, 0.12);
+  color: rgba(23, 34, 31, 0.35);
+  cursor: not-allowed;
+}
+
+.bk-slot.is-taken::after {
+  content: '';
+  position: absolute;
+  width: 70%;
+  height: 1.5px;
+  background: rgba(179, 38, 30, 0.55);
+  transform: rotate(-45deg);
+}
+
+.bk-slot.is-taken:hover {
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1.5px rgba(23, 34, 31, 0.12);
+}
+
+.bk-time__list button:disabled {
+  color: rgba(23, 34, 31, 0.35);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.bk-day:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+.bk-day__full {
+  margin-top: 2px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--error);
+}
+
+.bk-loading {
+  animation: bk-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes bk-blink {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.bk-time__legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9375rem;
+  color: var(--slate);
+}
+
+.bk-time__legend span {
+  position: relative;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ece6d8;
+}
+
+.bk-time__legend span::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 15%;
+  width: 70%;
+  height: 1.5px;
+  background: rgba(179, 38, 30, 0.55);
+  transform: rotate(-45deg);
+}
+
+/* Submit booking */
+.bk-submit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 650;
+  cursor: pointer;
+  opacity: 0.6;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s var(--ease-out);
+}
+
+.bk-submit.is-ready {
+  opacity: 1;
+}
+
+.bk-submit.is-ready:hover {
+  transform: translateY(-2px);
+}
+
+.bk-submit span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--sun);
+  color: var(--ink);
+}
+
+.bk-submit:disabled {
+  cursor: progress;
+}
+
+/* Confirmation */
+.bk-done {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border-radius: 20px 20px 20px 6px;
+  background: rgba(37, 211, 102, 0.12);
+  border: 1.5px solid rgba(18, 140, 75, 0.35);
+  animation: bk-rise 0.5s var(--ease-out) both;
+}
+
+.bk-done__title {
+  font-size: var(--step-2);
+  font-weight: 700;
+  font-stretch: 88%;
+  color: #0d5c30;
+}
+
+.bk-done strong {
+  overflow-wrap: anywhere;
+}
+
+.bk-done__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.bk-done__row .bk-alt {
+  background: #fff;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+/* must out-rank the white background above, or hover gives white on white */
+.bk-done__row .bk-alt:hover,
+.bk-done__row .bk-alt:focus-visible {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* "Booked" rubber stamp on the pass */
+.bk-pass {
+  position: relative;
+}
+
+.bk-pass__stamp {
+  position: absolute;
+  top: 46%;
+  left: 36%;
+  z-index: 2;
+  padding: 6px 16px;
+  border: 3px solid #35d07a;
+  border-radius: 10px;
+  color: #35d07a;
+  font-size: 1.6rem;
+  font-weight: 800;
+  font-stretch: 80%;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  animation: bk-stamp 0.45s cubic-bezier(0.3, 1.6, 0.4, 1) both;
+  pointer-events: none;
+}
+
+@keyframes bk-stamp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-12deg) scale(2.2);
+  }
+}
+
+@media (max-width: 640px) {
+  .bk-done__row {
+    grid-template-columns: 1fr;
+  }
+}
