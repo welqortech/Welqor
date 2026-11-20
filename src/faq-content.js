@@ -10,7 +10,7 @@ export const FAQ_GROUPS = [
     items: [
       {
         q: 'How do we start working together?',
-        a: 'Write to us through the Connect page or by email. We reply within one working day and book a 30-minute call to understand your goals, users and deadline.',
+        a: 'Message us on WhatsApp at +91 83000 83671, book a free 30-minute call on the Connect page, or write by email. We reply within one working day.',
         link: { to: '/contact', label: 'Connect with Welqor' },
       },
       {
@@ -242,7 +242,7 @@ export const FAQ_GROUPS = [
       },
       {
         q: 'How do we communicate during the project?',
-        a: 'Email and scheduled calls by default. Dedicated teams work inside your own tools, such as Slack, Jira or GitHub.',
+        a: 'WhatsApp for quick questions, plus email and scheduled Google Meet calls. Dedicated teams work inside your own tools, such as Slack, Jira or GitHub.',
       },
       {
         q: 'Can we hire a team instead of paying per project?',
@@ -280,7 +280,7 @@ export const FAQ_GROUPS = [
       },
       {
         q: 'How do I report a problem?',
-        a: 'Use the Support Centre. Pick what is wrong and it writes a labelled email for you, so it reaches the right person first.',
+        a: 'Use the Support Centre. Pick what is wrong and it writes a labelled message for you to send on WhatsApp or by email, so it reaches the right person first.',
         link: { to: '/support', label: 'Go to the Support Centre' },
       },
       {

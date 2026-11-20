@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { SITE } from '../config';
+import { SITE, whatsappLink } from '../config';
+import WhatsAppIcon from './WhatsAppIcon';
 import { Link } from '../router';
 import Logo from './Logo';
 import './Footer.css';
@@ -92,7 +93,14 @@ export default function Footer() {
         </div>
 
         <div className="ft-reach">
-          <p className="ft-label">Write to us</p>
+          <p className="ft-label">Talk to us</p>
+          <a className="ft-reach__wa" href={whatsappLink('Hi Welqor, ')} target="_blank" rel="noopener noreferrer">
+            <WhatsAppIcon className="ft-reach__wa-icon" />
+            <span>
+              {SITE.whatsappLabel}
+              <small>WhatsApp · preferred</small>
+            </span>
+          </a>
           <a className="ft-reach__mail" href={`mailto:${SITE.email}`}>
             {SITE.email}
             <span aria-hidden="true">&#8599;</span>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { SITE } from '../config';
+import { SITE, whatsappLink } from '../config';
+import WhatsAppIcon from '../components/WhatsAppIcon';
 import { SUPPORT_LEVELS, SUPPORT_SYMPTOMS, SUPPORT_CHECKLIST, SUPPORT_FIND } from '../help-content';
 import { Link } from '../router';
 import './Support.css';
@@ -105,7 +106,18 @@ function Console({ status, pick, setPick }) {
             </p>
 
             <div className="sx-result__actions">
-              <a className="sx-send" href={mailFor(symptom, level)}>
+              <a
+                className="sx-send sx-send--wa"
+                href={whatsappLink(`[${level.subject}] ${symptom.label}
+
+${REPORT}`)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <WhatsAppIcon className="sx-send__icon" />
+                WhatsApp us
+              </a>
+              <a className="sx-send sx-send--mail" href={mailFor(symptom, level)}>
                 Email support
                 <span aria-hidden="true">&rarr;</span>
               </a>
@@ -114,7 +126,7 @@ function Console({ status, pick, setPick }) {
               </button>
             </div>
             <p className="sx-result__note">
-              Opens your email app with the subject and a short report template filled in.
+              Both open with the subject and a short report template filled in. WhatsApp ({SITE.whatsappLabel}) is fastest.
             </p>
           </div>
         )}

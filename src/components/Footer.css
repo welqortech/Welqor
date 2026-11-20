@@ -111,6 +111,51 @@
   transform: rotate(45deg);
 }
 
+.ft-reach__wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  color: #fff !important;
+  font-size: clamp(1.4rem, 1rem + 1.8vw, 2.4rem);
+  font-weight: 650;
+  font-stretch: 86%;
+  transition: color 0.3s ease;
+}
+
+.ft-reach__wa:hover {
+  color: #8fe0ae !important;
+}
+
+.ft-reach__wa-icon {
+  flex: none;
+  width: 1.4em;
+  height: 1.4em;
+  padding: 0.24em;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+}
+
+.ft-reach__wa span {
+  display: grid;
+  line-height: 1.1;
+}
+
+.ft-reach__wa small {
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-stretch: 100%;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8fe0ae;
+}
+
+.ft-reach__mail {
+  font-size: clamp(1.1rem, 0.9rem + 0.9vw, 1.6rem) !important;
+}
+
 .ft-reach__meta {
   margin-top: 8px;
   font-size: 0.9375rem;

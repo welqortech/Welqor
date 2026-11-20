@@ -1,5 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
-import { SITE } from '../config';
+import { SITE, whatsappLink } from '../config';
+import BookCall from './BookCall';
+import WhatsAppIcon from '../components/WhatsAppIcon';
 import { CONNECT_TOPICS, CONNECT_NEEDS, CONNECT_WHEN, CONNECT_NEXT } from '../help-content';
 import './Connect.css';
 
@@ -9,7 +11,12 @@ import './Connect.css';
 function readPreset() {
   const params = new URLSearchParams(window.location.search);
   const topic = CONNECT_TOPICS[params.get('topic')] ? params.get('topic') : 'project';
-  return { topic, message: params.get('message') || '' };
+  const message = params.get('message') || '';
+  // A pre-written message (e.g. from the team builder) opens the letter;
+  // otherwise the page opens on booking a call. ?mode=call|write overrides.
+  const asked = params.get('mode');
+  const mode = asked === 'call' || asked === 'write' ? asked : message ? 'write' : 'call';
+  return { topic, message, mode };
 }
 
 function validate(v) {
@@ -44,6 +51,7 @@ export default function Connect() {
   const [needs, setNeeds] = useState([]);
   const [errors, setErrors] = useState({});
   const [sent, setSent] = useState(false);
+  const [mode, setMode] = useState(preset.mode);
   const formRef = useRef(null);
 
   const set = (e) => {
@@ -83,6 +91,41 @@ export default function Connect() {
 
   return (
     <main className="page connect" id="main">
+      <div className="cn-switch wrap">
+        <div className={`cn-tabs is-${mode}`} role="tablist" aria-label="How would you like to reach us?">
+          <span className="cn-tabs__pill" aria-hidden="true" />
+          <button type="button" role="tab" aria-selected={mode === 'call'} onClick={() => setMode('call')}>
+            Book a free call
+          </button>
+          <button type="button" role="tab" aria-selected={mode === 'write'} onClick={() => setMode('write')}>
+            Write to us
+          </button>
+        </div>
+        <a className="cn-wa" href={whatsappLink('Hi Welqor, ')} target="_blank" rel="noopener noreferrer">
+          <WhatsAppIcon className="cn-wa__icon" />
+          <span>
+            Chat on WhatsApp <small>{SITE.whatsappLabel}</small>
+          </span>
+        </a>
+      </div>
+
+      {mode === 'call' && (
+        <section className="cn-call wrap">
+          <header className="cn-call__head">
+            <p className="eyebrow">Connect with Welqor</p>
+            <h1 className="display">
+              Book a free call. <em>Thirty minutes, no pitch.</em>
+            </h1>
+            <p className="cn-call__lede">
+              Pick a slot that suits you. One of the founders joins on Google Meet to talk through
+              your idea, your users and your deadline.
+            </p>
+          </header>
+          <BookCall initialTopic={preset.topic} />
+        </section>
+      )}
+
+      {mode === 'write' && (
       <div className="cn wrap">
         <header className="cn__head">
           <p className="eyebrow">Connect with Welqor</p>
@@ -190,10 +233,17 @@ export default function Connect() {
         </form>
       </div>
 
+      )}
+
       <section className="cn-after">
         <div className="cn-after__grid wrap">
           <div className="cn-after__direct">
             <h2>Rather skip the form?</h2>
+            <a className="cn-after__wa" href={whatsappLink('Hi Welqor, ')} target="_blank" rel="noopener noreferrer">
+              <WhatsAppIcon className="cn-after__wa-icon" />
+              {SITE.whatsappLabel}
+              <span>Preferred</span>
+            </a>
             <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
             <p>{SITE.hours}</p>
             <p>Based in {SITE.location}, working with clients everywhere.</p>

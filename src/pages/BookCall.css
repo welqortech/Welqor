@@ -1,0 +1,730 @@
+/* ==================================================================
+   Book a call: day ribbon · clock dial · details · boarding pass
+================================================================== */
+
+.bk {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4.6fr);
+  gap: 40px clamp(32px, 4vw, 64px);
+  align-items: start;
+}
+
+.bk__main {
+  display: grid;
+  gap: 40px;
+  min-width: 0;
+}
+
+.bk-step {
+  min-width: 0;
+}
+
+.bk-step__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 18px;
+  font-size: var(--step-2);
+  font-weight: 700;
+  font-stretch: 88%;
+}
+
+.bk-step__title > span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px 10px 10px 3px;
+  background: var(--ink);
+  color: var(--sun);
+  font-size: 0.875rem;
+}
+
+.bk-step__title small {
+  font-size: 0.875rem;
+  font-weight: 550;
+  color: var(--slate);
+}
+
+/* ---------- 1. Day ribbon ---------- */
+
+.bk-days {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 24px 4px 10px;
+  margin: 0 -4px;
+  scroll-snap-type: x proximity;
+}
+
+.bk-day {
+  position: relative;
+  flex: none;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 68px;
+  padding: 14px 0 12px;
+  border: 1.5px solid var(--mist);
+  border-radius: 18px 18px 18px 5px;
+  background: #fff;
+  scroll-snap-align: start;
+  cursor: pointer;
+  animation: bk-rise 0.4s var(--ease-out) both;
+  animation-delay: calc(var(--i) * 30ms);
+  transition:
+    transform 0.3s var(--ease-out),
+    border-color 0.2s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+/* a little gap between working weeks */
+.bk-day.is-week {
+  margin-left: 14px;
+}
+
+.bk-day.is-week::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 18%;
+  bottom: 18%;
+  width: 1.5px;
+  background: var(--mist);
+}
+
+@keyframes bk-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.bk-day:hover {
+  border-color: var(--ink);
+  transform: translateY(-3px);
+}
+
+.bk-day.is-on {
+  border-color: var(--cobalt);
+  background: var(--cobalt);
+  color: #fff;
+  transform: translateY(-4px);
+  box-shadow: 0 14px 24px -14px rgba(9, 47, 53, 0.7);
+}
+
+.bk-day__month {
+  position: absolute;
+  top: -22px;
+  left: 2px;
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate);
+  white-space: nowrap;
+}
+
+.bk-day__dow {
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.bk-day__num {
+  font-size: 1.6rem;
+  font-weight: 750;
+  font-stretch: 84%;
+  line-height: 1.05;
+}
+
+.bk-day.is-on .bk-day__num {
+  color: var(--sun);
+}
+
+/* ---------- 2. Clock dial ---------- */
+
+.bk-step--time {
+  transition: opacity 0.3s ease;
+}
+
+.bk-step--time.is-waiting {
+  opacity: 0.55;
+}
+
+.bk-time {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: 28px 40px;
+  align-items: center;
+}
+
+.bk-dial {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1;
+}
+
+.bk-dial__face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.bk-dial__rim {
+  fill: #fff;
+  stroke: var(--mist);
+  stroke-width: 1.5;
+}
+
+.bk-tick {
+  stroke: rgba(23, 34, 31, 0.18);
+  stroke-width: 1;
+}
+
+.bk-tick--hour {
+  stroke: rgba(23, 34, 31, 0.45);
+  stroke-width: 2;
+}
+
+.bk-dial__open {
+  fill: none;
+  stroke: rgba(214, 180, 106, 0.35);
+  stroke-width: 26;
+  stroke-linecap: round;
+}
+
+.bk-dial__done {
+  fill: none;
+  stroke: rgba(214, 180, 106, 0.85);
+  stroke-width: 26;
+  stroke-linecap: round;
+  transition: d 0.6s var(--ease-out);
+}
+
+.bk-dial__hand {
+  transform-box: view-box;
+  transform-origin: 150px 150px;
+  transition: transform 0.7s cubic-bezier(0.3, 1.35, 0.4, 1);
+}
+
+.bk-dial__hand line {
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.bk-dial__hand circle {
+  fill: var(--cobalt);
+}
+
+.bk-dial__pin {
+  fill: var(--ink);
+  stroke: #fff;
+  stroke-width: 3;
+}
+
+.bk-slot {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 1.5px rgba(23, 34, 31, 0.25);
+  font-size: 0;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.3s cubic-bezier(0.3, 1.5, 0.4, 1),
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.bk-slot.is-hour {
+  width: 32px;
+  height: 32px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.bk-slot:hover {
+  transform: translate(-50%, -50%) scale(1.18);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.bk-slot.is-on {
+  background: var(--cobalt);
+  color: var(--sun);
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 5px var(--cobalt);
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.bk-dial__centre {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 44%;
+  transform: translate(-50%, 12px);
+  text-align: center;
+  pointer-events: none;
+}
+
+.bk-dial__centre strong {
+  font-size: 2.1rem;
+  font-weight: 750;
+  font-stretch: 84%;
+  line-height: 1;
+  animation: bk-pop 0.35s cubic-bezier(0.3, 1.5, 0.4, 1);
+}
+
+@keyframes bk-pop {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+.bk-dial__centre span {
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+.bk-dial__centre .bk-dial__hint {
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.3;
+}
+
+.bk-time__side {
+  display: grid;
+  gap: 18px;
+}
+
+.bk-time__local {
+  font-size: var(--step-1);
+  color: var(--slate);
+}
+
+.bk-time__local strong {
+  color: var(--cobalt);
+}
+
+/* The list is the small-screen alternative to the dial */
+.bk-time__list {
+  display: none;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bk-time__list button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1.5px solid var(--mist);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bk-time__list button[aria-pressed='true'] {
+  border-color: var(--cobalt);
+  background: var(--cobalt);
+  color: #fff;
+}
+
+/* ---------- 3. Details ---------- */
+
+.bk-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.bk-field {
+  display: grid;
+  gap: 6px;
+}
+
+.bk-field span {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.bk-field input,
+.bk-field select {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1.5px solid var(--mist);
+  border-radius: 14px;
+  background: #fff;
+  font-size: 1rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.bk-field input:focus,
+.bk-field select:focus {
+  outline: none;
+  border-color: var(--cobalt);
+  box-shadow: 0 0 0 4px rgba(9, 47, 53, 0.12);
+}
+
+.bk-field input[aria-invalid='true'] {
+  border-color: var(--error);
+}
+
+/* ---------- Boarding pass ---------- */
+
+.bk__side {
+  position: sticky;
+  top: calc(var(--nav-h) + 24px);
+  display: grid;
+  gap: 18px;
+}
+
+.bk-pass {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px;
+  filter: drop-shadow(0 30px 34px rgba(9, 47, 53, 0.25));
+}
+
+.bk-pass__main,
+.bk-pass__stub {
+  --notch: 13px;
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at var(--nx) 0, #0000 98%, #000) top / 100% 51% no-repeat,
+    radial-gradient(circle var(--notch) at var(--nx) 100%, #0000 98%, #000) bottom / 100% 51% no-repeat;
+  mask:
+    radial-gradient(circle var(--notch) at var(--nx) 0, #0000 98%, #000) top / 100% 51% no-repeat,
+    radial-gradient(circle var(--notch) at var(--nx) 100%, #0000 98%, #000) bottom / 100% 51% no-repeat;
+}
+
+.bk-pass__main {
+  --nx: 100%;
+  display: grid;
+  gap: 18px;
+  padding: 22px 22px 24px;
+  border-radius: 20px 0 0 20px;
+  background: var(--cobalt);
+  color: #fff;
+}
+
+.bk-pass__top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sun);
+}
+
+.bk-pass__route {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.bk-pass__route small,
+.bk-pass__grid dt {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sky);
+  opacity: 0.8;
+}
+
+.bk-pass__route strong {
+  font-size: 1.7rem;
+  font-weight: 750;
+  font-stretch: 84%;
+  line-height: 1.05;
+}
+
+.bk-pass__route .is-right {
+  text-align: right;
+}
+
+/* dashed flight path with a dot flying along it */
+.bk-pass__plane {
+  position: relative;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.45) 0 6px, transparent 6px 11px);
+}
+
+.bk-pass__plane i {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: var(--sun);
+  box-shadow: 0 0 10px var(--sun);
+  animation: bk-fly 2.8s ease-in-out infinite;
+}
+
+@keyframes bk-fly {
+  0% {
+    left: 0;
+  }
+  55%,
+  100% {
+    left: calc(100% - 10px);
+  }
+}
+
+.bk-pass__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1.5px dashed rgba(255, 255, 255, 0.25);
+}
+
+.bk-pass__grid .is-wide {
+  grid-column: 1 / -1;
+}
+
+.bk-pass__grid dd {
+  margin: 3px 0 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+  animation: bk-flip 0.45s var(--ease-out);
+}
+
+@keyframes bk-flip {
+  from {
+    opacity: 0;
+    transform: rotateX(80deg);
+  }
+}
+
+.bk-pass__grid dd.is-empty {
+  color: rgba(255, 255, 255, 0.35);
+  animation: none;
+}
+
+.bk-pass__stub {
+  --nx: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-left: 2px dashed rgba(23, 34, 31, 0.35);
+  border-radius: 0 20px 20px 0;
+  background: var(--sun);
+  color: var(--ink);
+}
+
+.bk-pass__len {
+  font-size: 2.2rem;
+  font-weight: 800;
+  font-stretch: 78%;
+  line-height: 1;
+}
+
+.bk-pass__min {
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bk-pass__free {
+  margin-top: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--sun);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* barcode */
+.bk-pass__code {
+  width: 40px;
+  height: 46px;
+  margin-top: 14px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ink) 0 2px,
+    transparent 2px 4px,
+    var(--ink) 4px 5px,
+    transparent 5px 8px,
+    var(--ink) 8px 11px,
+    transparent 11px 12px
+  );
+  opacity: 0.75;
+}
+
+/* ---------- Actions ---------- */
+
+.bk-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.bk-wa {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 66px;
+  padding: 10px 22px 10px 12px;
+  border-radius: 999px;
+  background: #25d366;
+  color: #062b14;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  text-decoration: none;
+  opacity: 0.6;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s var(--ease-out),
+    box-shadow 0.3s ease;
+}
+
+.bk-wa.is-ready {
+  opacity: 1;
+  box-shadow: 0 16px 30px -16px rgba(37, 211, 102, 0.9);
+}
+
+.bk-wa.is-ready:hover {
+  transform: translateY(-2px);
+}
+
+.bk-wa__icon {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  padding: 10px;
+  border-radius: 50%;
+  background: #fff;
+  color: #128c4b;
+}
+
+.bk-wa span {
+  display: grid;
+  line-height: 1.2;
+}
+
+.bk-wa small {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+.bk-actions__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.bk-alt {
+  display: grid;
+  place-items: center;
+  min-height: 50px;
+  padding: 0 12px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 650;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.bk-alt:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+.bk-actions__note {
+  font-size: 0.875rem;
+  color: var(--slate);
+}
+
+.bk-actions__note.is-warn {
+  color: var(--error);
+  font-weight: 600;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1060px) {
+  .bk {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bk__side {
+    position: static;
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 640px) {
+  .bk-time {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+
+  .bk-time__side {
+    justify-self: stretch;
+  }
+
+  .bk-time__list {
+    display: flex;
+  }
+
+  .bk-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .bk-actions__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bk-pass__plane i,
+  .bk-day,
+  .bk-pass__grid dd {
+    animation: none;
+  }
+}
