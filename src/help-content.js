@@ -270,7 +270,7 @@ export const TERMS = [
 export const PRIVACY_LEDGER = [
   {
     what: 'Enquiry details',
-    examples: 'Name, email, company, your message',
+    examples: 'Name, email, company, your message or call booking',
     why: 'To reply and prepare a proposal',
     keep: 'Up to 24 months after our last contact',
   },
@@ -297,9 +297,9 @@ export const PRIVACY_LEDGER = [
 export const PRIVACY = [
   {
     id: 'form',
-    title: 'How the contact form works',
+    title: 'How our forms work',
     body: [
-      'Our contact form does not send anything to a server. When you press send, it opens your own email app with the message filled in. Nothing reaches us until you send that email yourself.',
+      'When you send a message or book a call, the details you typed are saved to a private Google Sheet that only the Welqor team can open. Your email app, WhatsApp or Google Calendar then opens with everything filled in, so you keep a copy too.',
     ],
   },
   {
@@ -314,7 +314,7 @@ export const PRIVACY = [
     id: 'share',
     title: 'Who we share data with',
     body: [
-      'We never sell your data. We share it only with services we need to do the work, such as our email provider and, during a project, the hosting and tools you approve.',
+      'We never sell your data. We share it only with services we need to do the work, such as our email provider, Google (which hosts the sheet our forms save to) and, during a project, the hosting and tools you approve.',
     ],
   },
   {

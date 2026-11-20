@@ -29,6 +29,12 @@ export const CALL = {
   horizon: 10, // how many bookable days to offer
 };
 
+// Google Sheets: the Apps Script web app URL (ends in /exec) that stores
+// form submissions. Setup steps: google-apps-script/README.md
+// Leave empty to turn saving off.
+export const SHEETS_URL =
+  'https://script.google.com/macros/s/AKfycbyl_P_T4E0lOhJvNtAFCUOp4Szoh3As0sUbURLOwjIDPF9AjPLnGGmQl9GGs0t43DbK/exec';
+
 // A wa.me link with an optional ready-written message.
 export const whatsappLink = (text = '') =>
   `https://wa.me/${SITE.whatsapp}${text ? `?text=${encodeURIComponent(text)}` : ''}`;

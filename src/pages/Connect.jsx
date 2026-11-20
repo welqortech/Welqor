@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { SITE, whatsappLink } from '../config';
 import BookCall from './BookCall';
 import WhatsAppIcon from '../components/WhatsAppIcon';
+import { saveToSheet } from '../sheets';
 import { CONNECT_TOPICS, CONNECT_NEEDS, CONNECT_WHEN, CONNECT_NEXT } from '../help-content';
 import './Connect.css';
 
@@ -85,6 +86,15 @@ export default function Connect() {
     ]
       .filter((l) => l !== false && l !== '')
       .join('\n');
+    saveToSheet('Write to us', {
+      name: v.name.trim(),
+      email: v.email.trim(),
+      company: v.company.trim(),
+      topic: CONNECT_TOPICS[v.topic].label,
+      needs: needs.join(', '),
+      timing: v.when,
+      message: v.message.trim(),
+    });
     window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     setSent(true);
   };
@@ -221,7 +231,7 @@ export default function Connect() {
                 <path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z" />
               </svg>
             </button>
-            <p>Opens your email app with everything filled in. Nothing is sent until you press send there.</p>
+            <p>Sends your message to us and opens your email app with a copy, so you can add anything else.</p>
           </div>
 
           {sent && (

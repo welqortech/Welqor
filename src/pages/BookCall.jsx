@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { SITE, CALL, whatsappLink } from '../config';
 import { CONNECT_TOPICS } from '../help-content';
 import WhatsAppIcon from '../components/WhatsAppIcon';
+import { saveToSheet } from '../sheets';
 import './BookCall.css';
 
 /* ------------------------------------------------------------------
@@ -235,11 +236,29 @@ export default function BookCall({ initialTopic = 'project' }) {
     ? `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Call with Welqor')}&dates=${gcalStamp(start)}/${gcalStamp(new Date(start.getTime() + CALL.length * 60000))}&details=${encodeURIComponent(`Free 30-minute call about ${CONNECT_TOPICS[form.topic].label}. The Google Meet link will be sent by email.`)}`
     : '#';
 
-  const guard = (e) => {
+  // Save the booking to the sheet the first time it is confirmed, noting
+  // which button was used. The same booking is not saved twice.
+  const savedKey = useRef('');
+  const confirm = (via) => (e) => {
     if (!ready) {
       e.preventDefault();
       setTried(true);
+      return;
     }
+    const key = [dayKey(day), mins, form.name.trim(), form.email.trim()].join('|');
+    if (savedKey.current === key) return;
+    savedKey.current = key;
+    saveToSheet('Book a free call', {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      topic: CONNECT_TOPICS[form.topic].label,
+      company: form.company.trim(),
+      date: dayLabel(day, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+      time: `${t.clock} ${t.ampm}`,
+      localTime: start ? start.toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }) : '',
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+      via,
+    });
   };
 
   const weekOf = (d) => dayLabel(d, { month: 'long' });
@@ -342,7 +361,7 @@ export default function BookCall({ initialTopic = 'project' }) {
         <Pass name={form.name.trim()} day={day} mins={mins} topic={form.topic} />
 
         <div className="bk-actions">
-          <a className={`bk-wa${ready ? ' is-ready' : ''}`} href={waHref} target="_blank" rel="noopener noreferrer" onClick={guard}>
+          <a className={`bk-wa${ready ? ' is-ready' : ''}`} href={waHref} target="_blank" rel="noopener noreferrer" onClick={confirm('WhatsApp')}>
             <WhatsAppIcon className="bk-wa__icon" />
             <span>
               Confirm on WhatsApp
@@ -350,10 +369,10 @@ export default function BookCall({ initialTopic = 'project' }) {
             </span>
           </a>
           <div className="bk-actions__row">
-            <a className="bk-alt" href={mailHref} onClick={guard}>
+            <a className="bk-alt" href={mailHref} onClick={confirm('Email')}>
               Send by email
             </a>
-            <a className="bk-alt" href={gcalHref} target="_blank" rel="noopener noreferrer" onClick={guard}>
+            <a className="bk-alt" href={gcalHref} target="_blank" rel="noopener noreferrer" onClick={confirm('Google Calendar')}>
               Add to Google Calendar
             </a>
           </div>
