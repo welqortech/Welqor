@@ -13,7 +13,9 @@ function officeStatus() {
   const ist = new Date(now.getTime() + (now.getTimezoneOffset() + 330) * 60000);
   const hour = ist.getHours() + ist.getMinutes() / 60;
   const open = OPEN.days.includes(ist.getDay()) && hour >= OPEN.from && hour < OPEN.to;
-  const time = ist.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+  // Same "11:47 PM" format as the reply clock on the Connect page.
+  const h = ist.getHours();
+  const time = `${((h + 11) % 12) + 1}:${String(ist.getMinutes()).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
   return { open, time };
 }
 

@@ -4,16 +4,26 @@ import { SHEETS_URL } from './config';
 // Both calls are "simple" requests (no preflight), and the web app's reply
 // is readable, so the site can show whether a submission was saved.
 
+// When the page was opened. A form sent sooner than MIN_MS after that is
+// almost certainly a bot (the Apps Script checks the same number).
+const LOADED = Date.now();
+const MIN_MS = 3000;
+
 // Adds one row to the tab named `sheet`. Resolves to { ok, error }.
 // error is "slot-taken" when that call slot was just booked by someone else,
 // "off" when no web app URL is configured, "network" when it could not reach it.
 export async function saveToSheet(sheet, fields) {
   if (!SHEETS_URL) return { ok: false, error: 'off' };
+  const { website = '', ...rest } = fields;
+  const elapsed = Date.now() - LOADED;
+  // Honeypot filled in, or sent impossibly fast: act as if it worked, save nothing.
+  if (website || elapsed < MIN_MS) return { ok: true, error: null };
   const body = new URLSearchParams({
-    ...Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, v == null ? '' : String(v)])),
+    ...Object.fromEntries(Object.entries(rest).map(([k, v]) => [k, v == null ? '' : String(v)])),
     sheet,
     page: window.location.pathname,
-    website: '', // honeypot: real visitors never fill this in
+    website,
+    elapsed: String(elapsed),
   });
   try {
     const res = await fetch(SHEETS_URL, { method: 'POST', body, keepalive: true });

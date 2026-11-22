@@ -89,7 +89,7 @@ export const FAQ_GROUPS = [
     items: [
       {
         q: 'How long does it take?',
-        a: 'A marketing website usually takes two to four weeks. Apps and custom software typically take six to twelve weeks. Your proposal includes a week-by-week timeline.',
+        a: 'A marketing website usually takes two to four weeks. Web apps take six to twelve weeks, mobile apps eight to fourteen, and custom software six to sixteen. Your proposal includes a week-by-week timeline.',
       },
       {
         q: 'How will I know how it is going?',

@@ -10,6 +10,7 @@
 
 .so-hero__strike {
   position: relative;
+  text-decoration: none; /* <del>: the animated line below replaces the native one */
   color: var(--slate);
   opacity: 0.55;
 }

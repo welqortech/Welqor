@@ -23,6 +23,7 @@ const SHEETS = {
     ['Email', 'email'],
     ['Topic', 'topic'],
     ['Company', 'company'],
+    ['WhatsApp / phone', 'phone'],
     ['Date', 'date'],
     ['Time (IST)', 'time'],
     ['Visitor time', 'localTime'],
@@ -35,10 +36,12 @@ const SHEETS = {
     ['Received', 'received'],
     ['Name', 'name'],
     ['Email', 'email'],
+    ['WhatsApp / phone', 'phone'],
     ['Company', 'company'],
     ['Topic', 'topic'],
     ['Looking for', 'needs'],
     ['Timing', 'timing'],
+    ['Budget', 'budget'],
     ['Message', 'message'],
     ['Page', 'page'],
   ],
@@ -51,8 +54,11 @@ function doPost(e) {
   const p = (e && e.parameter) || {};
   const columns = SHEETS[p.sheet];
 
-  // Unknown tab, or the hidden "website" field was filled in (a bot): ignore.
-  if (!columns || p.website) return reply({ ok: false, error: 'rejected' });
+  // Unknown tab, the hidden "website" field was filled in, or the form was
+  // sent less than 3 seconds after the page opened (a bot): ignore.
+  if (!columns || p.website || !(Number(p.elapsed) >= 3000)) {
+    return reply({ ok: false, error: 'rejected' });
+  }
   if (p.sheet === BOOK && !SLOT_PATTERN.test(p.slot || '')) {
     return reply({ ok: false, error: 'missing-slot' });
   }

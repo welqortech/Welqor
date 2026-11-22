@@ -20,7 +20,11 @@ export default function Solutions() {
           <h1 className="display so-hero__title">
             Start from
             <br />
-            the <span className="so-hero__strike">feature list</span> <em>problem.</em>
+            the{' '}
+            <del className="so-hero__strike" aria-hidden="true">
+              feature list
+            </del>{' '}
+            <em>problem.</em>
           </h1>
           <div className="so-hero__foot">
             <p className="so-hero__lede">

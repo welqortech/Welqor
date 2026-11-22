@@ -8,7 +8,8 @@ import './Loader.css';
    3. Launch  - a cursor clicks the button, and the little page zooms
                 toward you and becomes the real site
 
-   Shown on the first visit and when returning to the home page only.
+   Shown on the landing page only: when the site is opened at / and
+   when going back to it.
    App.jsx drives the phases ("in", "play", "out").
 ------------------------------------------------------------------- */
 

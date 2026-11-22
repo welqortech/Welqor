@@ -2,7 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { SITE, CALL, whatsappLink } from '../config';
 import { CONNECT_TOPICS } from '../help-content';
 import WhatsAppIcon from '../components/WhatsAppIcon';
+import { track } from '@vercel/analytics';
 import { saveToSheet, loadBookedSlots } from '../sheets';
+import Honeypot from '../components/Honeypot';
 import './BookCall.css';
 
 /* ------------------------------------------------------------------
@@ -211,7 +213,7 @@ export default function BookCall({ initialTopic = 'project' }) {
   const days = useMemo(upcomingDays, []);
   const [day, setDay] = useState(null);
   const [mins, setMins] = useState(null);
-  const [form, setForm] = useState({ name: '', email: '', topic: initialTopic, company: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', topic: initialTopic, company: '', website: '' });
   const [tried, setTried] = useState(false);
 
   const [booked, setBooked] = useState(() => new Set()); // slot ids taken in the sheet
@@ -274,6 +276,7 @@ export default function BookCall({ initialTopic = 'project' }) {
     `About: ${CONNECT_TOPICS[form.topic].label}`,
     `Name: ${form.name.trim()}`,
     `Email: ${form.email.trim()}`,
+    form.phone.trim() && `WhatsApp: ${form.phone.trim()}`,
     form.company.trim() && `Company: ${form.company.trim()}`,
   ]
     .filter((l) => l !== false && l !== '')
@@ -323,6 +326,8 @@ export default function BookCall({ initialTopic = 'project' }) {
       email: form.email.trim(),
       topic: CONNECT_TOPICS[form.topic].label,
       company: form.company.trim(),
+      phone: form.phone.trim(),
+      website: form.website,
       date: longDay,
       time: `${t.clock} ${t.ampm}`,
       localTime: start.toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }),
@@ -331,6 +336,7 @@ export default function BookCall({ initialTopic = 'project' }) {
       slot: id,
     });
     if (result.ok) {
+      track('Call booked', { via, topic: form.topic });
       setStatus('done');
       setBooked((b) => new Set(b).add(id));
       return;
@@ -459,6 +465,10 @@ export default function BookCall({ initialTopic = 'project' }) {
               <input name="email" type="email" inputMode="email" autoComplete="email" value={form.email} onChange={set} aria-invalid={tried && !emailOk} />
             </label>
             <label className="bk-field">
+              <span>WhatsApp number (optional)</span>
+              <input name="phone" type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={set} />
+            </label>
+            <label className="bk-field">
               <span>We will talk about</span>
               <select name="topic" value={form.topic} onChange={set}>
                 {Object.entries(CONNECT_TOPICS).map(([id, x]) => (
@@ -473,6 +483,7 @@ export default function BookCall({ initialTopic = 'project' }) {
               <input name="company" autoComplete="organization" value={form.company} onChange={set} />
             </label>
           </div>
+          <Honeypot value={form.website} onChange={set} />
         </section>
       </div>
 

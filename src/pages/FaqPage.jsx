@@ -4,6 +4,20 @@ import { Link } from '../router';
 import NextStep from '../components/NextStep';
 import './FaqPage.css';
 
+// FAQPage structured data (schema.org), built from the same answers shown on
+// the page, so search engines can read every question and answer.
+const FAQ_SCHEMA = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ_GROUPS.flatMap((g) =>
+    g.items.map((x) => ({
+      '@type': 'Question',
+      name: x.q,
+      acceptedAnswer: { '@type': 'Answer', text: x.a },
+    }))
+  ),
+}).replace(/</g, String.fromCharCode(92) + 'u003c'); // so "</script>" in an answer cannot close the tag
+
 const STEP = 4; // questions revealed per "Show more"
 const TOTAL = FAQ_GROUPS.reduce((n, g) => n + g.items.length, 0);
 
@@ -106,6 +120,7 @@ export default function FaqPage() {
 
   return (
     <main className="page faq-page" id="main">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: FAQ_SCHEMA }} />
       <section className="fq-hero">
         <div className="fq-hero__inner wrap">
           <div className="fq-hero__copy">
