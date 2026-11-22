@@ -5,7 +5,7 @@ export const SITE = {
 
   // Where the contact form sends enquiries (opens the visitor's email app).
   // Replace with your real address.
-  email: 'hello@welqor.com',
+  email: 'hello@welqor.in',
 
   // Preferred contact channel. `whatsapp` is the number in international
   // format without + or spaces (used for wa.me links); `whatsappLabel` is
