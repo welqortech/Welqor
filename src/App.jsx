@@ -20,44 +20,62 @@ import Connect from './pages/Connect';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import NotFound from './pages/NotFound';
+import SEO from './seo.json';
+import { SITE_URL } from './config';
 
-const ROUTES = {
-  '/': { page: Home, title: 'Websites, apps and custom software' },
-  '/about': { page: About, title: 'About' },
-  '/services': { page: Services, title: 'Services' },
-  '/industries': { page: Industries, title: 'Industries' },
-  '/solutions': { page: Solutions, title: 'Solutions' },
-  '/technologies': { page: Technologies, title: 'Technologies' },
-  '/work': { page: WorkHub, title: 'Work with us' },
-  '/work/project': { page: WorkProject, title: 'Fixed-scope projects' },
-  '/work/team': { page: WorkTeam, title: 'Dedicated teams' },
-  '/work/care': { page: WorkCare, title: 'Care plans' },
-  '/faq': { page: FaqPage, title: 'FAQs' },
-  '/support': { page: Support, title: 'Support Centre' },
-  '/contact': { page: Connect, title: 'Connect with Welqor' },
-  '/terms': { page: Terms, title: 'Terms & Conditions' },
-  '/privacy': { page: Privacy, title: 'Privacy Policy' },
+// Page titles and descriptions live in seo.json, shared with the build
+// (webpack.config.js), which writes them into each page's HTML too.
+const PAGES = {
+  '/': Home,
+  '/about': About,
+  '/services': Services,
+  '/industries': Industries,
+  '/solutions': Solutions,
+  '/technologies': Technologies,
+  '/work': WorkHub,
+  '/work/project': WorkProject,
+  '/work/team': WorkTeam,
+  '/work/care': WorkCare,
+  '/faq': FaqPage,
+  '/support': Support,
+  '/contact': Connect,
+  '/terms': Terms,
+  '/privacy': Privacy,
 };
 
-// Entry loader ("Sketch. Build. Launch.") timings, in ms.
-// It plays on the first visit, and when returning to the home page.
-// Every other page change is instant.
-const LOADER_ON = new Set(['/']);
-const FADE_IN = 160; // returning home: fade the loader in, then swap the page
+const NOT_FOUND = { title: 'Page not found', description: SEO['/'].description };
+
+function setMeta(selector, attr, value) {
+  document.querySelector(selector)?.setAttribute(attr, value);
+}
+
+// Entry loader ("Sketch. Build. Launch."), about 2 seconds, on the landing
+// page only: when the site is opened at / and when going back to /.
+// Every other page opens instantly.
+const HOME = '/';
+const FADE_IN = 160; // going back home: fade the loader in, then swap the page
 const PLAY = 1600; // sketch, build, click
 const OUT = 420; // zoom into the site
 
-const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduceMotion = () =>
+  typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export default function App() {
   const path = usePath(); // where the URL is now
   const [shown, setShown] = useState(path); // the page actually rendered
-  const [phase, setPhase] = useState(() => (reduceMotion() ? 'idle' : 'play'));
+  // Not while pre-rendering (no window): the saved HTML must show the page.
+  const [phase, setPhase] = useState(() => (path === HOME && !reduceMotion() ? 'play' : 'idle'));
 
-  const route = ROUTES[shown] || { page: NotFound, title: 'Page not found' };
-  const Page = route.page;
+  const Page = PAGES[shown] || NotFound;
+  const meta = (PAGES[shown] && SEO[shown]) || NOT_FOUND;
 
-  // First visit: play, then zoom out into the site.
+  // The home page's HTML hides the pre-rendered content until the loader is
+  // up (see public/index.html), so it does not flash first. Show it now.
+  useLayoutEffect(() => {
+    document.documentElement.classList.remove('intro');
+  }, []);
+
+  // Opened at the home page: play, then zoom into the site.
   useEffect(() => {
     if (phase !== 'play') return undefined;
     const t1 = setTimeout(() => setPhase('out'), PLAY);
@@ -69,7 +87,7 @@ export default function App() {
   // Page change: instant, except when going back to the home page.
   useEffect(() => {
     if (path === shown) return undefined;
-    if (!LOADER_ON.has(path) || reduceMotion()) {
+    if (path !== HOME || reduceMotion()) {
       setPhase('idle');
       setShown(path);
       return undefined;
@@ -85,13 +103,21 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path]);
 
-  // New page: set the title, jump to the top (or the #section in the URL).
+  // New page: update the head, jump to the top (or the #section in the URL).
+  // The first page's head is already right: the build writes it into the HTML.
   useLayoutEffect(() => {
-    document.title = `${route.title} | Welqor`;
+    const title = `${meta.title} | Welqor`;
+    const url = SITE_URL + shown;
+    document.title = title;
+    setMeta('meta[name="description"]', 'content', meta.description);
+    setMeta('meta[property="og:title"]', 'content', title);
+    setMeta('meta[property="og:description"]', 'content', meta.description);
+    setMeta('meta[property="og:url"]', 'content', url);
+    setMeta('link[rel="canonical"]', 'href', url);
     if (!scrollToHash(window.location.hash, 'instant')) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
-  }, [shown, route.title]);
+  }, [shown, meta]);
 
   return (
     <>

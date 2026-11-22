@@ -1,0 +1,184 @@
+/* ------------------------------------------------------------------
+   Testimonials: a feature quote plus three smaller cards.
+   Tones match the Projects bento (cobalt, sun, paper, sky).
+------------------------------------------------------------------- */
+
+.tq {
+  padding-bottom: clamp(88px, 11vw, 160px);
+}
+
+.tq-head {
+  display: grid;
+  gap: 12px;
+  margin-bottom: clamp(32px, 4.5vw, 56px);
+}
+
+.tq-head__title {
+  font-size: var(--step-4);
+  font-weight: 750;
+  font-stretch: 84%;
+  line-height: 0.95;
+  letter-spacing: -0.022em;
+}
+
+.tq-head__title em {
+  font-style: normal;
+  color: var(--cobalt);
+  background: linear-gradient(transparent 62%, rgba(214, 180, 106, 0.55) 62% 92%, transparent 92%);
+}
+
+.tq-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* 1 big + 1 tall on the first row, 2 halves below */
+.tq-card:nth-child(1) {
+  grid-column: span 7;
+}
+
+.tq-card:nth-child(2) {
+  grid-column: span 5;
+}
+
+.tq-card:nth-child(n + 3) {
+  grid-column: span 6;
+}
+
+.tq-card {
+  --bg: #fff;
+  --fg: var(--ink);
+  --soft: var(--slate);
+  --line: rgba(23, 34, 31, 0.12);
+  --accent: var(--cobalt);
+}
+
+.tq-card--cobalt {
+  --bg: radial-gradient(120% 100% at 100% 0%, #14505a 0%, var(--cobalt) 55%, var(--cobalt-deep) 100%);
+  --fg: #fff;
+  --soft: rgba(255, 255, 255, 0.68);
+  --line: rgba(255, 255, 255, 0.08);
+  --accent: var(--sun);
+}
+
+.tq-card--sun {
+  --bg: linear-gradient(160deg, #f6e6bd 0%, #efd79c 100%);
+}
+
+.tq-card--paper {
+  --bg: linear-gradient(160deg, #ffffff 0%, #eef1ea 100%);
+}
+
+.tq-card--sky {
+  --bg: linear-gradient(160deg, #dfe7da 0%, var(--sky) 100%);
+}
+
+.tq-card figure {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px;
+  height: 100%;
+  padding: clamp(24px, 3vw, 40px);
+  overflow: hidden;
+  border-radius: 30px;
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: inset 0 0 0 1.5px var(--line);
+  transition:
+    transform 0.5s var(--ease-out),
+    box-shadow 0.5s var(--ease-out);
+}
+
+.tq-card figure:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    inset 0 0 0 1.5px var(--line),
+    0 30px 60px -30px rgba(9, 47, 53, 0.45);
+}
+
+.tq-card__mark {
+  height: 0.5em;
+  font-size: 6rem;
+  font-weight: 800;
+  line-height: 0.9;
+  color: var(--accent);
+}
+
+.tq-card blockquote p {
+  font-size: var(--step-1);
+  font-weight: 560;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+
+.tq-card:nth-child(1) blockquote p {
+  font-size: var(--step-2);
+  font-weight: 620;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+}
+
+.tq-card figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid color-mix(in srgb, var(--fg) 14%, transparent);
+}
+
+.tq-card__avatar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 14px;
+  background: var(--accent);
+  color: var(--tq-avatar-fg, #fff);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.tq-card--cobalt .tq-card__avatar {
+  color: var(--cobalt);
+}
+
+.tq-card__who {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.tq-card__who strong {
+  font-weight: 750;
+}
+
+.tq-card__who span {
+  font-size: var(--step--1);
+  color: var(--soft);
+}
+
+.tq-card__project {
+  padding: 4px 12px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--fg) 24%, transparent);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .tq-card:nth-child(n) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tq-card figure:hover {
+    transform: none;
+  }
+}

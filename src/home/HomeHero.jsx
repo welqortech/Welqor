@@ -252,11 +252,18 @@ export default function HomeHero() {
       <div className="hh__grid wrap">
         <div className="hh__copy">
           <h1 className="hh__title">
-            We design and build
-            <span className="hh__title-swap" aria-live="polite">
-              <span key={product}>{p.plural}</span>
+            {/* Fixed text for search engines and screen readers; the rotating
+                line below is decorative and hidden from assistive tech. */}
+            <span className="sr-only">
+              We design and build websites, mobile apps, custom software and AI tools that get used.
             </span>
-            that get used.
+            <span aria-hidden="true">
+              We design and build{' '}
+              <span className="hh__title-swap">
+                <span key={product}>{p.plural}</span>
+              </span>{' '}
+              that get used.
+            </span>
           </h1>
 
           <div className="hh-compose">
@@ -322,7 +329,7 @@ export default function HomeHero() {
               <View b={b} seed={BUSINESSES.indexOf(b)} />
             </div>
             <p className="hh-stage__caption">
-              <span>Preview</span> {p.label} for {b.brand}
+              <span>Sample</span> {p.label} for {b.brand}
             </p>
           </div>
           {auto && (

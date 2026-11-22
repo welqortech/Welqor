@@ -142,6 +142,14 @@ export const CONNECT_NEEDS = [
 
 export const CONNECT_WHEN = ['as soon as possible', 'in the next 1 to 3 months', 'later this year', 'I am just exploring'];
 
+export const CONNECT_BUDGET = [
+  'I am not sure yet',
+  'under ₹1 lakh',
+  '₹1 to 3 lakh',
+  '₹3 to 10 lakh',
+  'over ₹10 lakh',
+];
+
 export const CONNECT_NEXT = [
   { title: 'We read it', when: 'Within 1 working day', text: 'One of the founders reads every enquiry and writes back personally.' },
   { title: 'We talk', when: '30 minutes', text: 'A call about your goals, users and deadline. Free, no obligation.' },
@@ -270,7 +278,7 @@ export const TERMS = [
 export const PRIVACY_LEDGER = [
   {
     what: 'Enquiry details',
-    examples: 'Name, email, company, your message or call booking',
+    examples: 'Name, email, WhatsApp number if given, company, budget, your message or call booking',
     why: 'To reply and prepare a proposal',
     keep: 'Up to 24 months after our last contact',
   },
@@ -286,12 +294,6 @@ export const PRIVACY_LEDGER = [
     why: 'To invoice you and meet tax law',
     keep: 'As long as tax law requires',
   },
-  {
-    what: 'Technical data',
-    examples: 'Your IP address, seen by the font service',
-    why: 'To load this website’s fonts',
-    keep: 'Handled by Google under its own policy',
-  },
 ];
 
 export const PRIVACY = [
@@ -306,15 +308,16 @@ export const PRIVACY = [
     id: 'cookies',
     title: 'Cookies and tracking',
     body: [
-      'This website does not set cookies and does not use analytics or advertising trackers.',
-      'Fonts are loaded from Google Fonts, which means Google receives your IP address when the page loads.',
+      'This website does not set cookies and does not use advertising trackers.',
+      'We count visits with Vercel Web Analytics, which uses no cookies and does not identify you. It records the page you viewed, the site that sent you, and your country, browser and device type, only in aggregate.',
+      'Our fonts are served from this website itself, so no third-party font service sees your visit.',
     ],
   },
   {
     id: 'share',
     title: 'Who we share data with',
     body: [
-      'We never sell your data. We share it only with services we need to do the work, such as our email provider, Google (which hosts the sheet our forms save to) and, during a project, the hosting and tools you approve.',
+      'We never sell your data. We share it only with services we need to do the work, such as our email provider, Vercel (which hosts this website and counts visits), Google (which hosts the sheet our forms save to) and, during a project, the hosting and tools you approve.',
     ],
   },
   {

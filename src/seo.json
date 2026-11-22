@@ -1,0 +1,62 @@
+{
+  "/": {
+    "title": "Websites, apps and custom software",
+    "description": "Welqor designs and builds websites, mobile apps, custom software and AI tools. Fixed quotes, milestone demos, and code you own."
+  },
+  "/about": {
+    "title": "About",
+    "description": "Welqor is a software studio in Coimbatore building websites, apps, custom software and AI tools. Founded by Kavinkumar B and Kavinkumar P, who work on every project."
+  },
+  "/services": {
+    "title": "Services",
+    "description": "Websites, web apps, mobile apps, custom software, UI and UX design, AI and automation, and cloud. Seven services, one team, one fixed-quote process."
+  },
+  "/industries": {
+    "title": "Industries",
+    "description": "What Welqor builds for healthcare, retail, education, finance, logistics, manufacturing, hospitality, real estate and professional services, and what we watch for in each."
+  },
+  "/solutions": {
+    "title": "Solutions",
+    "description": "Start from the problem, not the feature list. Find the one that sounds like yours and see what we would build for it."
+  },
+  "/technologies": {
+    "title": "Technologies",
+    "description": "The tools Welqor builds with: React, Next.js, Flutter, Node.js, Python, PostgreSQL, LLM APIs and the major clouds, and why we pick each."
+  },
+  "/work": {
+    "title": "Work with us",
+    "description": "Three ways to work with Welqor: a fixed-scope project, a dedicated team, or a care plan for a live site or app. Find the one that fits."
+  },
+  "/work/project": {
+    "title": "Fixed-scope projects",
+    "description": "A fixed price agreed up front, paid in milestones, with a working build to review at every milestone and a week-by-week timeline in your proposal."
+  },
+  "/work/team": {
+    "title": "Dedicated teams",
+    "description": "A dedicated Welqor team on your roadmap, billed monthly per person. You set the priorities; the same people stay on your product."
+  },
+  "/work/care": {
+    "title": "Care plans",
+    "description": "Monthly care for live sites and apps: security updates, bug fixes, tested backups, uptime alerts, small improvements and a plain-language report."
+  },
+  "/faq": {
+    "title": "FAQs",
+    "description": "Answers on pricing, timelines, process, ownership, support and working with Welqor."
+  },
+  "/support": {
+    "title": "Support Centre",
+    "description": "Report a problem with a site or app Welqor looks after. See our hours, response times and what to include so we can fix it fast."
+  },
+  "/contact": {
+    "title": "Connect with Welqor",
+    "description": "Book a free 30-minute call, message us on WhatsApp, or write to us. One of the founders replies within one working day."
+  },
+  "/terms": {
+    "title": "Terms & Conditions",
+    "description": "The terms that apply when you use the Welqor website or work with Welqor."
+  },
+  "/privacy": {
+    "title": "Privacy Policy",
+    "description": "What information Welqor collects through this website, how it is used and stored, and the choices you have."
+  }
+}

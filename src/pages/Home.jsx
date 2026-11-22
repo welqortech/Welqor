@@ -4,6 +4,10 @@ import { WORK_MODELS } from '../help-content';
 import { SITE } from '../config';
 import { Link } from '../router';
 import useReveal from '../hooks/useReveal';
+import { CASE_STUDIES } from '../work-content';
+import Testimonials from '../components/Testimonials';
+import ProjectArt from '../home/ProjectArt';
+import '../home/HomeProjects.css';
 import HomeHero from '../home/HomeHero';
 import Grain from '../components/Grain';
 import '../home/Home.css';
@@ -13,7 +17,9 @@ const ROW_B = ['AI assistants', 'Automations', 'Dashboards', 'Booking systems', 
 
 function Marquee() {
   const row = (items, reverse) => (
-    <div className={`hm-marquee__row${reverse ? ' is-reverse' : ''}`}>
+    // Each word is drawn twice for the endless scroll, so the moving rows are
+    // hidden from screen readers and the list below is read once instead.
+    <div className={`hm-marquee__row${reverse ? ' is-reverse' : ''}`} aria-hidden="true">
       <div className="hm-marquee__track">
         {[...items, ...items].map((t, i) => (
           <span key={i}>{t}</span>
@@ -23,6 +29,11 @@ function Marquee() {
   );
   return (
     <section className="hm-marquee" aria-label="What we build">
+      <ul className="sr-only">
+        {[...ROW_A, ...ROW_B].map((t) => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
       {row(ROW_A)}
       {row(ROW_B, true)}
     </section>
@@ -88,7 +99,7 @@ function BuildStack() {
       <div className="wrap">
         <div className="hm-head">
           <p className="eyebrow">What we do</p>
-          <h2 className="section-title">Four things we build, start to finish.</h2>
+          <h2 className="section-title">Four areas, seven services, start to finish.</h2>
         </div>
         <ol className="hm-build__stack">
           {BUILD_CARDS.map((c, i) => (
@@ -136,7 +147,7 @@ function BeforeAfter() {
         <div className="hm-head hm-head--split">
           <h2 className="section-title">Drag to see the difference.</h2>
           <p className="section-lede">
-            The same business, before and after the right software. Slide the handle.
+            A sample business, before and after the right software. Slide the handle.
           </p>
         </div>
         <div
@@ -283,6 +294,54 @@ function Ways() {
   );
 }
 
+// Projects: a bento of three tiles, each with a live mini preview of the
+// product (home/ProjectArt.jsx). Content lives in work-content.js.
+function RecentProjects() {
+  return (
+    <section className="px" id="projects" aria-labelledby="px-title">
+      <div className="wrap">
+        <div className="px-head">
+          <p className="eyebrow">Projects</p>
+          <h2 className="px-head__title" id="px-title">
+            Built, shipped, <em>in use.</em>
+          </h2>
+          <p className="px-head__note">Client names stay private. The work does the talking.</p>
+        </div>
+
+        <ul className="px-grid">
+          {CASE_STUDIES.map((c, i) => (
+            <li key={c.slug} id={c.slug} className={`px-tile px-tile--${c.tone} reveal`} style={{ '--d': i }}>
+              <div className="px-tile__art" aria-hidden="true">
+                <ProjectArt kind={c.art} />
+              </div>
+              <div className="px-tile__meta">
+                <p className="px-tile__client">
+                  <span>{c.area}</span>
+                  {c.client}, Coimbatore
+                </p>
+                <h3 className="px-tile__name">{c.name}</h3>
+                <p className="px-tile__line">{c.line}</p>
+                <ul className="px-tile__tags" aria-label="Highlights">
+                  {c.tags.map((t) => (
+                    <li key={t}>{t}</li>
+                  ))}
+                </ul>
+                <p className="px-tile__stack">
+                  <span className="sr-only">Built with </span>
+                  {c.stack.join(' · ')}
+                </p>
+              </div>
+              <span className="px-tile__n" aria-hidden="true">
+                0{i + 1}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 function Final() {
   const href = (pick) =>
     `/contact?topic=project&message=${encodeURIComponent(`${pick}.\n\nA bit more about it: `)}`;
@@ -323,6 +382,8 @@ export default function Home() {
       <BeforeAfter />
       <Track />
       <Flips />
+      <RecentProjects />
+      <Testimonials />
       <Ways />
       <Final />
     </main>

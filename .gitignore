@@ -1,5 +1,6 @@
 node_modules/
 dist/
+build-ssr/
 .DS_Store
 npm-debug.log*
 .claude/

@@ -15,7 +15,7 @@
   --error: #b3261e;
 
   /* Type */
-  --font: 'Bricolage Grotesque', 'Inter Display', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', 'Inter Display', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --step--1: 0.875rem;
   --step-0: 1.0625rem;
   --step-1: clamp(1.125rem, 1.05rem + 0.35vw, 1.3rem);

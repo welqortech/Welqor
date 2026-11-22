@@ -180,9 +180,9 @@ export default function About() {
               Two Kavinkumars. <em>One roll call.</em>
             </h1>
             <p className="ab-hero__lede">
-              Welqor was started by two friends who have shared a name since Class 5 and have been
-              building things together ever since. This is how a school register turned into a
-              software studio.
+              Welqor is a software studio in Coimbatore that designs and builds websites, apps,
+              custom software and AI tools. It was started by two friends who have shared a name
+              since Class 5.
             </p>
             <a className="ab-hero__scroll" href="#story">
               Read the story
@@ -201,6 +201,43 @@ export default function About() {
             <span className="ab-mono__tag ab-mono__tag--p">Kavinkumar P</span>
           </div>
         </div>
+      </section>
+
+      <section className="ab-studio section" aria-labelledby="ab-studio-title">
+        <div className="ab-studio__grid wrap">
+          <div className="ab-studio__copy">
+            <p className="eyebrow">The studio</p>
+            <h2 className="section-title" id="ab-studio-title">
+              A small software studio in Coimbatore.
+            </h2>
+            <p>
+              Welqor plans, designs, builds and looks after software for businesses, from a first
+              website to the internal tools a company runs on. We are at our best where spreadsheets,
+              phone calls and copy-paste have stopped keeping up.
+            </p>
+            <p>
+              We keep the studio small on purpose. Both founders are on every project, from the
+              first call to launch and after, so nothing gets lost between a sales team and the
+              people who build.
+            </p>
+          </div>
+          <dl className="ab-studio__facts">
+            {ABOUT.studio.map((f) => (
+              <div key={f.label} className="reveal">
+                <dt>{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+        <ul className="ab-studio__ways wrap">
+          {ABOUT.principles.map((x, i) => (
+            <li key={x.title} className="reveal" style={{ '--d': i }}>
+              <h3>{x.title}</h3>
+              <p>{x.text}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <div className="ab-story-head wrap" id="story">

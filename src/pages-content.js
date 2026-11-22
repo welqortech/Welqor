@@ -6,21 +6,28 @@
 // `b` and `p` split into two columns, and `after` brings them back together.
 
 export const ABOUT = {
+  // The company at a glance (the "The studio" section).
+  studio: [
+    { label: 'Based in', value: 'Coimbatore, Tamil Nadu' },
+    { label: 'Founders', value: 'Kavinkumar B and Kavinkumar P' },
+    { label: 'What we build', value: 'Websites, web and mobile apps, custom software, AI and automation' },
+    { label: 'How we work', value: 'Fixed quotes, a working build at every milestone, code you own' },
+  ],
+  principles: [
+    { title: 'Plain language', text: 'Scopes, quotes and updates you can read without a glossary.' },
+    { title: 'One team, start to finish', text: 'The people on your first call are the people who build it and look after it.' },
+    { title: 'Yours to keep', text: 'Code, designs and accounts are handed over in your name.' },
+  ],
   before: [
     {
       tag: 'Class 5',
       title: 'Two hands went up.',
-      text: 'First day of a new school year. The teacher reads the register, calls out "Kavinkumar", and two boys on opposite sides of the room stand up at the same time. Nobody wanted to be "the other one", so the class settled it by initials. From that day on, they were B and P.',
-    },
-    {
-      tag: 'Classes 6 to 10',
-      title: 'One computer, two questions.',
-      text: 'Computer lab meant two students to a machine, and B and P always shared one. B kept opening things up to see how they worked. P kept asking what else the machine could be made to do. For a science fair they built a quiz game held together by nothing but PowerPoint hyperlinks. Their teacher kept using it for three more years.',
+      text: 'The teacher calls out "Kavinkumar" and two boys stand up at once. Neither wanted to be "the other one", so the class settled it by initials. From that day on, they were B and P.',
     },
     {
       tag: 'Class 12',
       title: 'The fork in the road.',
-      text: 'Exams finished, admission letters arrived, and the letters pointed to two different colleges. On the last day of school they made one promise: whoever builds something real first calls the other.',
+      text: 'Years of sharing one lab computer ended with admission letters to two different colleges. On the last day of school they made one promise: whoever builds something real first calls the other.',
     },
   ],
   b: {
@@ -29,11 +36,11 @@ export const ABOUT = {
     chapters: [
       {
         title: 'Learning how things hold up',
-        text: 'Data structures, operating systems, networks. B fell for the unglamorous part of software, the part that keeps working when a thousand people press the same button at once.',
+        text: 'B fell for the unglamorous part of software: the part that keeps working when a thousand people press the same button.',
       },
       {
         title: 'The billing app at 2 AM',
-        text: 'His first paid job was a billing tool for a neighbourhood shop. It crashed on its first Diwali rush. He fixed it from the back of the shop before sunrise, and learned that software is a promise you have to keep.',
+        text: 'His first paid job, a billing tool for a local shop, crashed in the Diwali rush. He fixed it before sunrise and learned that software is a promise you keep.',
       },
     ],
   },
@@ -43,11 +50,11 @@ export const ABOUT = {
     chapters: [
       {
         title: 'Learning how machines read',
-        text: 'Language models, retrieval, prompt design, evaluation. P went deep on getting software to read documents, answer questions and draft the boring parts of someone’s day.',
+        text: 'P went deep on getting software to read documents, answer questions and draft the boring parts of someone’s day.',
       },
       {
         title: 'The assistant that went quiet',
-        text: 'For a department project he built an assistant that answered student questions from the college handbook. Everyone stopped emailing the office. He learned that the best AI is the kind people forget is there.',
+        text: 'His college project answered student questions from the handbook, and everyone stopped emailing the office. The best AI is the kind people forget is there.',
       },
     ],
   },
@@ -55,12 +62,12 @@ export const ABOUT = {
     {
       tag: 'The call',
       title: 'Somebody finally rang.',
-      text: 'A family friend’s clinic had paid an agency for a booking app that never launched. They asked B for help. B kept the promise from Class 12 and rang P. Over one long weekend B rebuilt the booking system and P added an assistant that answered patients’ questions on WhatsApp. On Monday morning the clinic opened with both running.',
+      text: 'A family friend’s clinic had paid an agency for a booking app that never launched. B kept the promise and rang P. Over one weekend B rebuilt the booking system and P added a WhatsApp assistant for patients. On Monday the clinic opened with both running.',
     },
     {
       tag: 'Welqor',
       title: 'One builds it. One makes it think.',
-      text: 'That weekend made it obvious. Each of them could build half of what businesses need now; together they could build all of it. So the two Kavinkumars from Class 5 started a studio, and they still answer to B and P.',
+      text: 'Each of them could build half of what businesses need; together they could build all of it. So they started a studio, and they still answer to B and P.',
     },
   ],
   founders: [

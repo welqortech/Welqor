@@ -1,5 +1,12 @@
 // Site-wide settings. Change these in one place.
 
+// The live address (no trailing slash) and the Google Search Console
+// verification token live in site.json, because the build reads them too
+// (canonical tags, sitemap.xml, robots.txt).
+import SITE_JSON from './site.json';
+
+export const SITE_URL = SITE_JSON.url;
+
 export const SITE = {
   name: 'Welqor',
 
@@ -11,9 +18,9 @@ export const SITE = {
   // format without + or spaces (used for wa.me links); `whatsappLabel` is
   // how it is shown on the page.
   whatsapp: '918300083671',
-  whatsappLabel: '+91 83 000 83 671',
+  whatsappLabel: '+91 83000 83671',
 
-  location: 'India',
+  location: 'Coimbatore, India',
 
   // Shown on the Support Centre and Connect pages.
   hours: 'Monday to Friday, 9:30 AM to 6:30 PM IST',

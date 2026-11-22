@@ -3,15 +3,17 @@ import { SITE, whatsappLink } from '../config';
 import BookCall from './BookCall';
 import ReplyClock from './ReplyClock';
 import WhatsAppIcon from '../components/WhatsAppIcon';
+import { track } from '@vercel/analytics';
 import { saveToSheet } from '../sheets';
-import { CONNECT_TOPICS, CONNECT_NEEDS, CONNECT_WHEN, CONNECT_NEXT } from '../help-content';
+import { CONNECT_TOPICS, CONNECT_NEEDS, CONNECT_WHEN, CONNECT_BUDGET, CONNECT_NEXT } from '../help-content';
+import Honeypot from '../components/Honeypot';
 import './Connect.css';
 
 // The site's one form. It reads like a letter: visitors fill in the blanks.
 // Links can preset it, e.g. /contact?topic=team&message=...
 
 function readPreset() {
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search);
   const topic = CONNECT_TOPICS[params.get('topic')] ? params.get('topic') : 'project';
   const message = params.get('message') || '';
   // A pre-written message (e.g. from the team builder) opens the letter;
@@ -48,6 +50,9 @@ export default function Connect() {
     email: '',
     topic: preset.topic,
     when: CONNECT_WHEN[0],
+    budget: CONNECT_BUDGET[0],
+    phone: '',
+    website: '', // honeypot
     message: preset.message,
   });
   const [needs, setNeeds] = useState([]);
@@ -84,8 +89,12 @@ export default function Connect() {
       topic: CONNECT_TOPICS[v.topic].label,
       needs: needs.join(', '),
       timing: v.when,
+      budget: v.budget,
+      phone: v.phone.trim(),
+      website: v.website,
       message: v.message.trim(),
     });
+    if (result.ok) track('Message sent', { topic: v.topic, budget: v.budget });
     setSendState(result.ok ? 'sent' : 'error');
   };
 
@@ -107,7 +116,13 @@ export default function Connect() {
             Write to us
           </button>
         </div>
-        <a className="cn-wa" href={whatsappLink('Hi Welqor, ')} target="_blank" rel="noopener noreferrer">
+        <a
+          className="cn-wa"
+          href={whatsappLink('Hi Welqor, ')}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => track('WhatsApp opened', { from: 'contact' })}
+        >
           <WhatsAppIcon className="cn-wa__icon" />
           <span>
             Chat on WhatsApp <small>{SITE.whatsappLabel}</small>
@@ -183,6 +198,21 @@ export default function Connect() {
             .
           </p>
 
+          <p className="letter__line">
+            My budget is{' '}
+            <span className="blank blank--select">
+              <label className="sr-only" htmlFor="c-budget">
+                Budget
+              </label>
+              <select id="c-budget" name="budget" value={v.budget} onChange={set}>
+                {CONNECT_BUDGET.map((b) => (
+                  <option key={b}>{b}</option>
+                ))}
+              </select>
+            </span>
+            .
+          </p>
+
           <fieldset className="letter__needs">
             <legend className="letter__line">It involves</legend>
             {CONNECT_NEEDS.map((n) => (
@@ -211,8 +241,11 @@ export default function Connect() {
           <p className="letter__line">
             You can reply to{' '}
             <Blank id="c-email" name="email" type="email" inputMode="email" label="your email" autoComplete="email" width="14ch" value={v.email} onChange={set} error={errors.email} />
+            {' '}or WhatsApp{' '}
+            <Blank id="c-phone" name="phone" type="tel" inputMode="tel" label="number (optional)" autoComplete="tel" width="13ch" value={v.phone} onChange={set} />
             .
           </p>
+          <Honeypot value={v.website} onChange={set} />
 
           {Object.keys(errors).some((k) => errors[k]) && (
             <p className="letter__missing" role="alert">

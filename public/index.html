@@ -3,26 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Welqor | Websites, apps and custom software</title>
-    <meta
-      name="description"
-      content="Welqor designs and builds websites, mobile apps, custom software and AI tools. Fixed quotes, weekly demos, and code you own."
-    />
+    <title><%- htmlWebpackPlugin.options.page.title %> | Welqor</title>
+    <meta name="description" content="<%- htmlWebpackPlugin.options.page.description %>" />
     <meta name="theme-color" content="#092F35" />
-    <meta property="og:title" content="Welqor | Websites, apps and custom software" />
-    <meta
-      property="og:description"
-      content="Websites, apps and AI tools, planned, built and looked after by one small team."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&display=swap"
-    />
+    <% if (htmlWebpackPlugin.options.url) { %>
+    <link rel="canonical" href="<%- htmlWebpackPlugin.options.url %>" />
+    <meta property="og:url" content="<%- htmlWebpackPlugin.options.url %>" />
+    <% } else { %>
+    <meta name="robots" content="noindex" />
+    <% } %>
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Welqor" />
+    <meta property="og:title" content="<%- htmlWebpackPlugin.options.page.title %> | Welqor" />
+    <meta property="og:description" content="<%- htmlWebpackPlugin.options.page.description %>" />
+    <% if (htmlWebpackPlugin.options.verification) { %>
+    <meta name="google-site-verification" content="<%- htmlWebpackPlugin.options.verification %>" />
+    <% } %>
+    <% if (htmlWebpackPlugin.options.intro) { %>
+    <!-- Landing page: keep the pre-rendered page hidden behind the loader's
+         paper colour until the intro starts. Skipped without JavaScript or
+         with reduced motion, so the page then shows at once. -->
+    <script>
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('intro');
+        // Safety net: if the app's script never loads, show the page anyway.
+        setTimeout(function () { document.documentElement.classList.remove('intro'); }, 3000);
+      }
+    </script>
+    <style>
+      html.intro body { background: #f3efe6; }
+      html.intro #root { visibility: hidden; }
+    </style>
+    <% } %>
+    <noscript>
+      <!-- Without JavaScript, show everything that would otherwise fade in. -->
+      <style>
+        .reveal { opacity: 1 !important; transform: none !important; }
+        *, *::before, *::after { animation: none !important; transition: none !important; }
+      </style>
+    </noscript>
   </head>
   <body>
-    <noscript>Welqor needs JavaScript turned on to show this page.</noscript>
     <div id="root"></div>
   </body>
 </html>

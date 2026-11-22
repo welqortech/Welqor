@@ -17,8 +17,18 @@ function subscribe(callback) {
 
 const normalise = (path) => (path.length > 1 ? path.replace(/\/+$/, '') : path) || '/';
 
+// While pre-rendering at build time there is no window; the build sets the path.
+let serverPath = '/';
+export function setServerPath(path) {
+  serverPath = path;
+}
+
 export function usePath() {
-  return useSyncExternalStore(subscribe, () => normalise(window.location.pathname));
+  return useSyncExternalStore(
+    subscribe,
+    () => normalise(window.location.pathname),
+    () => serverPath
+  );
 }
 
 export function scrollToHash(hash, behavior) {

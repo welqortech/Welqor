@@ -1,0 +1,5 @@
+# Welqor: every page may be crawled.
+User-agent: *
+Allow: /
+
+Sitemap: https://www.welqor.in/sitemap.xml

@@ -712,6 +712,11 @@
     display: flex;
   }
 
+  /* On phones the list replaces the dial, so times are not offered twice. */
+  .bk-dial {
+    display: none;
+  }
+
   .bk-fields {
     grid-template-columns: 1fr;
   }
